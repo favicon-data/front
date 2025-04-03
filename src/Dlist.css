@@ -1,0 +1,34 @@
+/* 목록 페이지 완성 후 css분리 예정*/
+.categoryWrapper {
+  height: 610px;
+  overflow-y: scroll;
+}
+.cabutton {
+  background: none;
+  border: none;
+  text-align: left;
+  font-size: 14px;
+}
+.dataOutput {
+  margin-left: 2vw;
+  width: 58vw;
+  margin-bottom: 20px;
+}
+.outputWrapper {
+  margin-top: 51px;
+}
+.dataOutput {
+  background-color: rgba(89, 116, 69, 0.1);
+  height: 130px;
+  border-radius: 30px;
+}
+.outputCategory {
+  width: 66px;
+  height: 44px;
+  background-color: #658147;
+  text-align: center;
+  align-content: center;
+  color: #fff;
+  font-size: 20px;
+  margin-right: 25px;
+}

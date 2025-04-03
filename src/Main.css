@@ -1,0 +1,123 @@
+/* Header CSS 메뉴바 부분*/
+html,
+body {
+  /* width: 1920px; */
+  width: 1920px;
+  height: 1080px;
+  border: 1px dashed red;
+}
+.header_wrap a {
+  color: black;
+  font-size: 24px;
+  text-decoration: none;
+  line-height: 52px;
+}
+.header_wrap {
+  height: 135px;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  border-bottom: 1px solid black;
+}
+/* --------------------------------------------------------- */
+.bigwrapper {
+  width: 1920px;
+  height: 945px;
+  display: flex;
+}
+.firstbox {
+  width: 360px;
+  height: 100%;
+  background-color: rgba(89, 116, 69, 0.1);
+  /* 597445 컬러 */
+}
+/* 2번째 박스 */
+.secondbox {
+  width: 1560px;
+  height: 100%;
+}
+.title {
+  font-size: 36px;
+  font-family: Arial, Helvetica, sans-serif;
+  text-align: center;
+  margin: 100px 0 100px 0;
+}
+.categorybox {
+  display: inline-flex;
+}
+a {
+  text-decoration: none; /* 밑줄 제거 */
+  color: black; /* 기본 색상 설정 */
+}
+
+.categorybox img {
+  width: 90px;
+}
+.categorybox p {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 26px;
+  font-weight: 500;
+  text-align: center;
+}
+.box {
+  margin-bottom: 100px;
+}
+.box1 {
+  margin: 0 320px 0 320px;
+}
+.box2 {
+  margin-right: 320px;
+}
+/* toggle */
+.toggle {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.toggle p {
+  font-family: Arial, Helvetica, sans-serif;
+  font-weight: 600;
+  font-size: 20px;
+  margin: 0 40px 0 40px;
+}
+.toggleBon {
+  position: relative;
+  width: 40px;
+  left: 30px;
+  height: 100%;
+  border-radius: 50px;
+  box-shadow: 1px 1px 1px gray;
+  background-color: rgba(89, 116, 69, 0.1);
+}
+/* 토글 이동 */
+.toggleBoff {
+  width: 40px;
+  height: 100%;
+  border-radius: 50px;
+  box-shadow: 1px 1px 1px gray;
+  background-color: rgba(89, 116, 69, 0.1);
+}
+/* input box */
+.chatplace {
+  margin-top: 40px;
+  padding: 30px 30px 30px 20px;
+  width: 1000px;
+  height: 200px;
+  border-radius: 30px;
+  border: 1px lightgray;
+  box-shadow: 1px 2px 3px 2px lightgray;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 22px;
+  outline: none;
+  resize: none;
+}
+.send-button {
+  width: 50px;
+  height: 50px;
+  border-radius: 50px;
+  border: none;
+  font-size: 24px;
+  position: relative;
+  left: 490px;
+  bottom: 60px;
+}
