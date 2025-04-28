@@ -8,6 +8,7 @@ import Danls from './pages/Data_anls.jsx';
 import Manual from './pages/Manual.jsx';
 import Signup from './pages/Signup.jsx';
 import Login from './pages/LoginP.jsx';
+import Ddetail from './pages/Data_detail.jsx';
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
         <Route path="/manual" element={<Manual />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/detail" element={<Ddetail />} />
       </Routes>
     </BrowserRouter>
   );

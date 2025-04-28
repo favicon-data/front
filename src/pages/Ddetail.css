@@ -1,0 +1,93 @@
+/* 전체 컨테이너 */
+.data-detail-container {
+  font-family: Arial, sans-serif;
+  padding: 20px;
+  /* max-width: 1200px; */
+  margin: auto;
+}
+
+/* 제목 영역 */
+.data-header {
+  background-color: rgba(89, 116, 69, 0.1);
+  /* padding: 20px; */
+  border-radius: 5px;
+}
+
+.data-header h1 {
+  margin: 0;
+  font-size: 24px;
+}
+
+.data-header p {
+  margin-top: 10px;
+  color: #555;
+}
+
+.button-container {
+  height: 63px;
+  margin-top: 15px;
+  display: flex;
+  justify-content: space-between;
+  background-color: #fff;
+  border-top: 0.5px solid gray;
+  border-bottom: 0.5px solid gray;
+  align-content: center;
+}
+
+.csv-button {
+  background-color: #658147;
+  width: 77px;
+  height: 46px;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.download-button {
+  background-color: black;
+  width: 136px;
+  height: 46px;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.download-icon {
+  margin-right: 5px;
+}
+
+/* 테이블 섹션 */
+.data-table-section {
+  margin-top: 60px;
+}
+
+.data-table-section h2 {
+  font-size: 24px;
+}
+
+/* 테이블 스타일 */
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.data-table th,
+.data-table td {
+  border: solid thin #ddd;
+  padding: 10px;
+  height: 63px;
+  font-size: 24px;
+}
+
+.data-table th {
+  background-color: rgba(155, 188, 165, 0.5);
+}
+
+.data-table td {
+  background-color: #f9f9f9; /* 연한 회색 */
+  width: 524px;
+}

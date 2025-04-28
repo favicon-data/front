@@ -13,7 +13,7 @@ function Header() {
           </Link>
           <Link to="list">데이터 목록</Link>
           <Link to="anls">데이터 분석</Link>
-          <Link to="bulletin">게시판</Link>
+          <Link to="bulletin">데이터요청</Link>
           <Link to="manual">이용안내</Link>
         </div>
       </header>
