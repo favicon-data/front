@@ -43,7 +43,11 @@ const Green = ({ userName }) => {
         <div>
           <h3 style={{ marginTop: 0, fontSize: '26px' }}>Data</h3>
           <div style={{ borderLeft: '1.5px solid black' }}>
-            <ul style={{ listStyleType: 'none', paddingLeft: '15px' }}></ul>
+            <ul style={{ listStyleType: 'none', paddingLeft: '15px' }}>
+              <li>질병 : {data.질병 * 100}% </li>
+              <li>환경 : {data.환경 * 100}% </li>
+              <li>기후 : {data.기후 * 100}% </li>
+            </ul>
           </div>
         </div>
       </div>

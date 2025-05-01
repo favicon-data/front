@@ -22,7 +22,7 @@ function App() {
         <Route path="/manual" element={<Manual />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/login" element={<Login />} />
-        <Route path="/detail" element={<Ddetail />} />
+        <Route path="/detail/:datasetId" element={<Ddetail />} />
       </Routes>
     </BrowserRouter>
   );
