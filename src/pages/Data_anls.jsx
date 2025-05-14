@@ -1,202 +1,210 @@
 import React, { useState } from 'react';
 import '../Danls.css';
 
-// y축 최대 선택 개수
-const MAX_Y_AXIS = 2;
-
-// 더미 데이터 예시
-const dummyDataList = [
-  { id: 1, name: '서울 일평균 기온' },
-  { id: 2, name: '서울 일강수량' },
-  { id: 3, name: '서울 미세먼지 (PM10)' },
-  { id: 4, name: '서울 바람속도' },
-  { id: 5, name: '서울 습도' },
-  { id: 6, name: '서울 일조시간' },
+const CATEGORIES = [
+  { key: '기후', label: '기후' },
+  { key: '환경', label: '환경' },
+  { key: '질병', label: '질병' },
+  { key: '지역', label: '지역' },
+  { key: '기간', label: '기간' },
 ];
 
-// 기간 옵션 생성 (2021.06 ~ 2024.06)
-const getMonthOptions = () => {
-  const result = [];
-  for (let y = 2021; y <= 2024; y++) {
-    const mStart = y === 2021 ? 6 : 1;
-    const mEnd = y === 2024 ? 6 : 12;
-    for (let m = mStart; m <= mEnd; m++) {
-      result.push(`${y}.${String(m).padStart(2, '0')}`);
-    }
-  }
-  return result;
-};
-
 function DataAnalysisLayout() {
-  const [showSearch, setShowSearch] = useState(false);
-  const [showPeriod, setShowPeriod] = useState(false);
-  const [searchKeyword, setSearchKeyword] = useState('');
-  const [searchResults, setSearchResults] = useState([]);
-  const [yAxisList, setYAxisList] = useState([]);
-  const [period, setPeriod] = useState({ from: '', to: '' });
+  const [openCategory, setOpenCategory] = useState(null);
+  const [subCategories, setSubCategories] = useState({});
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [selected, setSelected] = useState({
+    기후: [],
+    환경: [],
+    질병: [],
+    지역: [],
+    기간: { from: '', to: '' },
+  });
+  const [chartData, setChartData] = useState(null);
 
-  // y축 설정 버튼 클릭
-  const handleYAxisClick = () => {
-    if (yAxisList.length < MAX_Y_AXIS) setShowSearch(true);
-  };
-
-  // 검색
-  const handleSearchChange = (e) => {
-    const keyword = e.target.value;
-    setSearchKeyword(keyword);
-    if (keyword.trim()) {
-      setSearchResults(
-        dummyDataList.filter((item) => item.name.includes(keyword))
+  // 카테고리 토글
+  const handleCategoryClick = async (categoryKey) => {
+    if (openCategory === categoryKey) {
+      setOpenCategory(null);
+      setError(null);
+      return;
+    }
+    setOpenCategory(categoryKey);
+    setError(null);
+    if (categoryKey === '기간') return;
+    if (subCategories[categoryKey]) return;
+    setLoading(true);
+    try {
+      const res = await fetch(
+        'http://54.180.238.119:8080/data-set/group-by-theme'
       );
-    } else {
-      setSearchResults([]);
+      const data = await res.json();
+      setSubCategories((prev) => ({
+        ...prev,
+        기후: data['기후'] || [],
+        환경: data['환경'] || [],
+        질병: data['질병'] || [],
+        지역: data['지역'] || [],
+      }));
+    } catch (e) {
+      setError('데이터를 불러오는데 실패했습니다.');
+    } finally {
+      setLoading(false);
     }
   };
 
-  // 검색 결과 선택
-  const handleSelectSearch = (item) => {
-    if (yAxisList.length < MAX_Y_AXIS) {
-      setYAxisList([...yAxisList, item]);
-      setShowSearch(false);
-      setSearchKeyword('');
-      setSearchResults([]);
-    }
+  // 체크박스 선택
+  const handleCheckbox = (category, value) => {
+    setSelected((prev) => {
+      const prevArr = prev[category];
+      if (prevArr.includes(value)) {
+        return { ...prev, [category]: prevArr.filter((v) => v !== value) };
+      } else if (prevArr.length < 2) {
+        return { ...prev, [category]: [...prevArr, value] };
+      }
+      return prev;
+    });
   };
 
-  // 기간 설정 버튼 클릭
-  const handlePeriodClick = () => setShowPeriod(true);
+  // 기간 변경
+  const handlePeriodChange = (type, value) => {
+    setSelected((prev) => ({
+      ...prev,
+      기간: { ...prev.기간, [type]: value },
+    }));
+  };
 
-  // 기간 선택
-  const handlePeriodSelect = (from, to) => {
-    setPeriod({ from, to });
-    setShowPeriod(false);
+  // 분석 버튼 클릭 시 Python 서버로 데이터 전송
+  const handleAnalyze = async () => {
+    // 보낼 데이터 구조 예시
+    //여기  post구조에 맞게 수정해야함
+    const themeCandidates = [
+      selected.기후,
+      selected.환경,
+      selected.질병,
+    ].filter(Boolean); // 값이 있는 것만 추출
+
+    const [theme1, theme2] = themeCandidates;
+    const payload = {
+      theme1,
+      theme2,
+      region: selected.지역,
+      period: selected.기간,
+    };
+    console.log(payload);
+    try {
+      const res = await fetch('http://54.180.238.119:8080/analysis', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload),
+      });
+      if (!res.ok) throw new Error('서버 오류');
+      const data = await res.json();
+      // 예시: 서버에서 분석 결과(그래프 데이터 등) 반환
+      setChartData(data.chart); // chart: [숫자, ...]
+    } catch (e) {
+      setError('분석 요청에 실패했습니다.');
+    }
   };
 
   return (
-    <div className="analysis-root">
-      <h3 className="analysis-title">데이터 분석</h3>
-      <div style={{ marginLeft: '80px' }}>
-        <div className="analysis-desc">
-          분석할 데이터를 선택하거나 그래프를 통해 분석된 데이터를 확인해보세요
-        </div>
-        <div className="analysis-btn-row">
-          <button className="analysis-btn" onClick={handlePeriodClick}>
-            기간 설정
-          </button>
+    <div className="dal-root">
+      <h3 className="dal-title">데이터 분석</h3>
+      <div className="dal-category-bar">
+        {CATEGORIES.map((cat) => (
           <button
-            className="analysis-btn"
-            onClick={handleYAxisClick}
-            disabled={yAxisList.length >= MAX_Y_AXIS}
+            key={cat.key}
+            className={`dal-cat-btn${
+              openCategory === cat.key ? ' active' : ''
+            }`}
+            onClick={() => handleCategoryClick(cat.key)}
           >
-            y축 설정
+            {cat.label}
           </button>
-        </div>
-        <div className="analysis-yaxis-list">
-          {yAxisList.map((item) => (
-            <span className="analysis-yaxis-chip" key={item.id}>
-              {item.name}
-            </span>
-          ))}
-        </div>
-        <div className="resultWrapper">
-          <div className="analysis-graph-placeholder" />
-          <div className="analysis-result-box">
-            <div className="result-title">선택한 데이터</div>
-            <div className="result-info">
-              기간:{' '}
-              {period.from && period.to
-                ? `${period.from} ~ ${period.to}`
-                : '2021-06~2024-06'}
-            </div>
-            <div className="result-info">
-              y축:{' '}
-              {yAxisList.length > 0
-                ? yAxisList.map((item) => item.name).join(', ')
-                : '미설정'}
-            </div>
-            <div className="result-hint">* y축 최대 2개까지 설정 가능</div>
-          </div>
-        </div>
-
-        {/* y축 검색 오버레이 */}
-        {showSearch && (
-          <div className="overlay-bgs">
-            <input
-              type="text"
-              value={searchKeyword}
-              onChange={handleSearchChange}
-              placeholder="데이터 검색"
-              className="search-input"
-            />
-            <ul className="search-list">
-              {searchResults.map((item) => (
-                <li
-                  className="search-item"
-                  key={item.id}
-                  onClick={() => handleSelectSearch(item)}
-                >
-                  {item.name}
-                </li>
-              ))}
-              {searchKeyword && searchResults.length === 0 && (
-                <li className="search-empty">검색 결과 없음</li>
-              )}
-            </ul>
-          </div>
-        )}
-
-        {/* 기간 설정 오버레이 */}
-        {showPeriod && (
-          <PeriodOverlay
-            onSelect={handlePeriodSelect}
-            onClose={() => setShowPeriod(false)}
-          />
-        )}
+        ))}
+        <button className="dal-analyze-btn" onClick={handleAnalyze}>
+          분석
+        </button>
       </div>
+      {openCategory && (
+        <div className="dal-options-box">
+          {loading && <div>로딩중...</div>}
+          {error && <div className="dal-error">{error}</div>}
+          {['기후', '환경', '질병', '지역'].includes(openCategory) &&
+            subCategories[openCategory] && (
+              <div className="dal-checkbox-list">
+                {subCategories[openCategory].length === 0 ? (
+                  <div>데이터 없음</div>
+                ) : (
+                  subCategories[openCategory].map((item) => (
+                    <label key={item} className="dal-checkbox-label">
+                      <input
+                        type="checkbox"
+                        checked={selected[openCategory].includes(item)}
+                        onChange={() => handleCheckbox(openCategory, item)}
+                        disabled={
+                          !selected[openCategory].includes(item) &&
+                          selected[openCategory].length >= 2
+                        }
+                      />
+                      {item}
+                    </label>
+                  ))
+                )}
+              </div>
+            )}
+          {openCategory === '기간' && (
+            <div className="dal-period-box">
+              <input
+                type="month"
+                value={selected.기간.from}
+                onChange={(e) => handlePeriodChange('from', e.target.value)}
+              />
+              <span>~</span>
+              <input
+                type="month"
+                value={selected.기간.to}
+                onChange={(e) => handlePeriodChange('to', e.target.value)}
+              />
+            </div>
+          )}
+        </div>
+      )}
+      {chartData && (
+        <div className="dal-chart-area">
+          <BarChart data={chartData} />
+          <div className="dal-result-info">
+            <div>데이터 분석 결과</div>
+            <div>데이터 상세정보</div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
 
-// 기간 오버레이 컴포넌트
-function PeriodOverlay({ onSelect, onClose }) {
-  const options = getMonthOptions();
-  const [from, setFrom] = useState('');
-  const [to, setTo] = useState('');
-
+// 예시 바차트 (실제 라이브러리로 대체 가능)
+function BarChart({ data }) {
   return (
-    <div className="overlay-bg" onClick={onClose}>
-      <div className="overlay-panel" onClick={(e) => e.stopPropagation()}>
-        <div className="period-title">기간 설정</div>
-        <div className="period-row">
-          <select value={from} onChange={(e) => setFrom(e.target.value)}>
-            <option value="">시작 연월</option>
-            {options.map((opt) => (
-              <option key={opt} value={opt}>
-                {opt}
-              </option>
-            ))}
-          </select>
-          <select value={to} onChange={(e) => setTo(e.target.value)}>
-            <option value="">종료 연월</option>
-            {options.map((opt) => (
-              <option key={opt} value={opt}>
-                {opt}
-              </option>
-            ))}
-          </select>
-        </div>
-        <button
-          className="period-btn"
-          onClick={() => onSelect(from, to)}
-          disabled={!from || !to}
-        >
-          선택
-        </button>
-        <button className="period-btn" onClick={onClose}>
-          닫기
-        </button>
-      </div>
-    </div>
+    <svg
+      width="500"
+      height="300"
+      style={{ background: '#fafafa', borderRadius: 8 }}
+    >
+      {data.map((v, i) => (
+        <rect
+          key={i}
+          x={i * 80 + 30}
+          y={300 - v}
+          width={50}
+          height={v}
+          fill="#78905b"
+        />
+      ))}
+    </svg>
   );
 }
 

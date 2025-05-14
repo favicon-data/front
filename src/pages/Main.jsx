@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import '../Main.css';
 
 import Green from '../components/GreenArea.jsx';
 
@@ -72,7 +73,8 @@ const Main = () => {
               alignItems: 'center',
             }}
           >
-            <div className="toggle">
+            {/* 토글 기능 삭제 */}
+            {/* <div className="toggle">
               <p
                 style={{ color: toggle ? 'lightgray' : 'black' }}
                 onClick={handleToggle}
@@ -98,7 +100,7 @@ const Main = () => {
               >
                 AI Chat
               </p>
-            </div>
+            </div> */}
             <textarea
               className="chatplace"
               placeholder="검색어를 입력해주세요"

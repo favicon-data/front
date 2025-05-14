@@ -1,4 +1,4 @@
-.analysis-root {
+/* .analysis-root {
   font-family: 'Pretendard', Arial, sans-serif;
 }
 
@@ -11,7 +11,7 @@
 .analysis-title {
   font-size: 28px;
   font-weight: bold;
-  /* margin-bottom: 8px; */
+
   margin: 40px 0 30px 80px;
   color: #222;
 }
@@ -73,7 +73,7 @@
 
 .analysis-result-box {
   background: #fff;
-  /* border: 1px solid #e0e5d8; */
+  
   border-radius: 8px;
   padding: 20px;
   width: 320px;
@@ -102,11 +102,10 @@
   left: 0;
   width: 100vw;
   height: 100vh;
-  /* background: rgba(0, 0, 0, 0.1); */
+  
   display: flex;
   align-items: flex-start;
-  /* justify-content: center; */
-  /* z-index: 1000; */
+  
 }
 
 .overlay-panel {
@@ -124,7 +123,7 @@
   right: 700px;
   width: 700px;
   height: 65px;
-  /* padding: 8px 12px; */
+
   border: 1px solid #e0e5d8;
   border-radius: 6px;
   margin-bottom: 12px;
@@ -193,4 +192,141 @@
   background: #f0f0f0;
   color: #bbb;
   cursor: not-allowed;
+} */
+.dal-root {
+  font-family: 'Pretendard', 'sans-serif';
+  background: #fff;
+  padding: 24px 0 0 40px;
+}
+
+.dal-title {
+  font-size: 20px;
+  margin-bottom: 16px;
+  color: #222;
+  font-weight: 700;
+}
+
+.dal-category-bar {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.dal-cat-btn {
+  border: 1.5px solid #e5ede4;
+  background: #fff;
+  color: #78905b;
+  border-radius: 10px 10px 0 0;
+  padding: 8px 28px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s, border 0.2s;
+  margin-bottom: -2px;
+}
+
+.dal-cat-btn.active {
+  background: #e5ede4;
+  border: 1.5px solid #78905b;
+  color: #78905b;
+  font-weight: 700;
+  z-index: 2;
+}
+
+.dal-analyze-btn {
+  margin-left: 24px;
+  background: #78905b;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 32px;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.dal-analyze-btn:hover {
+  background: #6a7e51;
+}
+
+.dal-options-box {
+  background: #f7faf7;
+  border: 1.5px solid #e5ede4;
+  border-radius: 0 0 12px 12px;
+  margin-top: -2px;
+  margin-bottom: 24px;
+  padding: 18px 28px 18px 28px;
+  min-width: 320px;
+  max-width: 500px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+}
+
+.dal-checkbox-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.dal-checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #fff;
+  border: 1.3px solid #e5ede4;
+  border-radius: 8px;
+  padding: 7px 16px;
+  font-size: 15px;
+  color: #78905b;
+  cursor: pointer;
+  transition: background 0.2s, border 0.2s;
+  user-select: none;
+}
+
+.dal-checkbox-label input[type='checkbox'] {
+  accent-color: #78905b;
+  width: 18px;
+  height: 18px;
+}
+
+.dal-checkbox-label input[type='checkbox']:checked + span,
+.dal-checkbox-label input[type='checkbox']:checked {
+  background: #e5ede4;
+  border-color: #78905b;
+  color: #78905b;
+}
+
+.dal-checkbox-label input[type='checkbox']:checked ~ span {
+  font-weight: 700;
+}
+
+.dal-checkbox-label input[type='checkbox']:disabled {
+  opacity: 0.5;
+}
+
+.dal-period-box {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 20px;
+  background: #fff;
+  border: 1.5px solid #e5ede4;
+  border-radius: 8px;
+  width: fit-content;
+}
+
+.dal-period-box input[type='month'] {
+  border: 1.2px solid #e5ede4;
+  border-radius: 6px;
+  padding: 5px 10px;
+  font-size: 15px;
+  color: #222;
+  background: #f7faf7;
+}
+
+.dal-error {
+  color: #d14343;
+  font-size: 15px;
+  margin-bottom: 8px;
 }
