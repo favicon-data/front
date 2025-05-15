@@ -1,332 +1,443 @@
-/* .analysis-root {
-  font-family: 'Pretendard', Arial, sans-serif;
-}
-
-.analysis-breadcrumb {
-  font-size: 14px;
-  color: #888;
-  margin-bottom: 12px;
-}
-
-.analysis-title {
-  font-size: 28px;
-  font-weight: bold;
-
-  margin: 40px 0 30px 80px;
-  color: #222;
-}
-
-.analysis-desc {
-  color: #444;
-  margin-bottom: 16px;
-  font-size: 20px;
-}
-
-.analysis-btn-row {
-  display: flex;
-  gap: 12px;
-  margin-bottom: 12px;
-}
-
-.analysis-btn {
-  padding: 8px 20px;
-  background: #f5f8f2;
-  border: 1px solid #d2e0c7;
-  border-radius: 6px;
-  font-size: 20px;
-  color: #3a5028;
-  cursor: pointer;
-  transition: background 0.2s;
-}
-.analysis-btn:disabled {
-  background: #f0f0f0;
-  color: #bbb;
-  cursor: not-allowed;
-}
-
-.analysis-yaxis-list {
-  margin-bottom: 12px;
-}
-
-.analysis-yaxis-chip {
-  background: #e0e5d8;
-  padding: 4px 10px;
-  border-radius: 12px;
-  margin-right: 8px;
-  font-size: 13px;
-  color: #205b1a;
-  display: inline-block;
-}
-.resultWrapper {
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-}
-.analysis-graph-placeholder {
-  height: 650px;
-  width: 1350px;
-  background: #f2f5ec;
-  margin-bottom: 16px;
-  border-radius: 8px;
-  border: 1px solid #e0e5d8;
-}
-
-.analysis-result-box {
-  background: #fff;
-  
-  border-radius: 8px;
+/* 전체 레이아웃 */
+.data-analysis-container {
+  font-family: 'Noto Sans KR', sans-serif;
+  width: 1700px;
+  margin: 0 auto;
   padding: 20px;
-  width: 320px;
-  margin-top: 8px;
+  color: #333;
 }
 
-.result-title {
-  font-weight: bold;
-  margin-bottom: 6px;
-  font-size: 23px;
-  color: #222;
-}
-.result-info {
-  font-size: 20px;
-  color: #666;
-}
-.result-hint {
-  font-size: 15px;
-  color: #aaa;
-  margin-top: 8px;
-}
-
-.overlay-bg {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  
-  display: flex;
-  align-items: flex-start;
-  
-}
-
-.overlay-panel {
-  background: #fff;
-  margin: 315px 0 0 80px;
-  border-radius: 20px;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
-  padding: 24px;
-  min-width: 320px;
-}
-
-.search-input {
-  position: absolute;
-  top: 228px;
-  right: 700px;
-  width: 700px;
-  height: 65px;
-
-  border: 1px solid #e0e5d8;
-  border-radius: 6px;
-  margin-bottom: 12px;
-  font-size: 18px;
-}
-
-.search-list {
-  position: absolute;
-  top: 300px;
-  right: 700px;
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  max-height: 220px;
-  overflow-y: scroll;
-}
-
-.search-item {
-  padding: 10px 0;
-  padding-left: 10px;
-  border-left: 1px solid #f0f0f0;
-  background-color: #fff;
-  width: 687px;
-  cursor: pointer;
-  font-size: 18px;
+/* 상단 네비게이션 */
+.breadcrumb {
   display: flex;
   align-items: center;
-  transition: background 0.18s;
-}
-.search-item:hover {
-  background: #f5f8f2;
-}
-
-.search-empty {
-  color: #aaa;
-  padding: 30px 5px;
-  font-size: 18px;
+  font-size: 14px;
+  color: #777;
+  margin-bottom: 10px;
 }
 
-.period-title {
-  margin-bottom: 8px;
+.separator {
+  margin: 0 5px;
+}
+
+.current {
+  color: #333;
+}
+
+/* 페이지 제목 */
+.page-title {
+  font-size: 24px;
   font-weight: bold;
-  font-size: 16px;
-  color: #205b1a;
-}
-.period-row {
-  display: flex;
-  gap: 10px;
-  margin-bottom: 16px;
-}
-.period-btn {
-  margin-right: 12px;
-  padding: 7px 18px;
-  background: #f5f8f2;
-  border: 1px solid #d2e0c7;
-  border-radius: 6px;
-  font-size: 15px;
-  color: #3a5028;
-  cursor: pointer;
-  transition: background 0.2s;
-}
-.period-btn:last-child {
-  margin-right: 0;
-}
-.period-btn:disabled {
-  background: #f0f0f0;
-  color: #bbb;
-  cursor: not-allowed;
-} */
-.dal-root {
-  font-family: 'Pretendard', 'sans-serif';
-  background: #fff;
-  padding: 24px 0 0 40px;
-}
-
-.dal-title {
-  font-size: 20px;
-  margin-bottom: 16px;
-  color: #222;
-  font-weight: 700;
-}
-
-.dal-category-bar {
-  display: flex;
-  gap: 8px;
-  align-items: center;
   margin-bottom: 20px;
 }
 
-.dal-cat-btn {
-  border: 1.5px solid #e5ede4;
-  background: #fff;
-  color: #78905b;
-  border-radius: 10px 10px 0 0;
-  padding: 8px 28px;
-  font-size: 16px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: background 0.2s, border 0.2s;
-  margin-bottom: -2px;
+/* 안내 텍스트 */
+.instruction {
+  margin-bottom: 15px;
+  font-weight: bold;
 }
 
-.dal-cat-btn.active {
-  background: #e5ede4;
-  border: 1.5px solid #78905b;
-  color: #78905b;
-  font-weight: 700;
-  z-index: 2;
+.bullet {
+  color: #4a6741;
+  margin-right: 5px;
 }
 
-.dal-analyze-btn {
-  margin-left: 24px;
-  background: #78905b;
-  color: #fff;
-  border: none;
+/* 분석 섹션 */
+.analysis-section {
+  margin-bottom: 30px;
+  background-color: #f5f5f5;
   border-radius: 8px;
-  padding: 8px 32px;
-  font-size: 16px;
-  font-weight: 700;
+  overflow: hidden;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* 토글 버튼 스타일 */
+.toggle-buttons {
+  display: flex;
+  width: 100%;
+  gap: 2px;
+}
+
+.toggle-button {
+  flex: 1;
+  padding: 15px;
+  background-color: #8aa47e;
+  color: white;
+  border: none;
+  border-radius: 4px 4px 0 0;
   cursor: pointer;
-  transition: background 0.2s;
+  font-weight: 500;
+  text-align: center;
+  transition: background-color 0.2s;
 }
 
-.dal-analyze-btn:hover {
-  background: #6a7e51;
+.toggle-button:hover {
+  background-color: #7a9470;
 }
 
-.dal-options-box {
-  background: #f7faf7;
-  border: 1.5px solid #e5ede4;
-  border-radius: 0 0 12px 12px;
-  margin-top: -2px;
-  margin-bottom: 24px;
-  padding: 18px 28px 18px 28px;
-  min-width: 320px;
-  max-width: 500px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+.toggle-button.active {
+  background-color: #6a8460;
 }
 
-.dal-checkbox-list {
+.toggle-button.analyze {
+  background-color: #333;
+}
+
+.toggle-button.analyze:hover {
+  background-color: #444;
+}
+
+.toggle-button.analyze:disabled {
+  background-color: #999;
+  cursor: not-allowed;
+}
+
+/* 토글 내용 영역 */
+.toggle-content {
+  display: none;
+  background-color: #f5f5f5;
+  border-radius: 0 0 8px 8px;
+  overflow: hidden;
+  width: 100%;
+  min-width: 360px;
+  box-sizing: border-box;
+}
+
+.toggle-content.active {
+  display: block;
+}
+
+/* 로딩 컨테이너 */
+.loading-container {
+  padding: 20px;
+  text-align: center;
+  color: #666;
+}
+
+/* 카테고리 및 옵션 영역 */
+.categories-container {
+  width: 100%;
+}
+
+/* 카테고리 헤더 */
+.category-headers {
+  display: flex;
+  width: 100%;
+  background-color: #8aa47e;
+}
+
+.category-header {
+  flex: 1;
+  padding: 15px;
+  text-align: center;
+  color: white;
+  font-weight: 500;
+  font-size: 16px;
+}
+
+/* 옵션 컨테이너와 행 고정 */
+.options-container,
+.region-options-grid {
+  width: 100% !important;
+  min-width: 360px !important;
+  max-width: 100% !important;
+  box-sizing: border-box;
+  background-color: #f9f9f9;
+}
+
+.options-row {
+  display: flex;
+  width: 100% !important;
+  min-width: 360px !important;
+  max-width: 100% !important;
+  gap: 16px;
+  border-bottom: 1px solid #eee;
+}
+
+.options-row:last-child {
+  border-bottom: none;
+}
+
+/* 카테고리별 컬럼 고정 */
+.option-column {
+  flex: 1 1 0;
+  min-width: 120px !important;
+  max-width: 200px !important;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+/* 옵션 아이템(체크박스+라벨) 고정 */
+.option-item,
+.region-option {
+  display: flex;
+  align-items: center;
+  min-height: 32px;
+  padding: 2px 0;
+  box-sizing: border-box;
+  width: 100% !important;
+  max-width: 100% !important;
+  overflow: hidden;
+  gap: 10px;
+}
+
+/* 체크박스 크기, 스타일 고정 */
+.option-item input[type='checkbox'],
+.region-option input[type='checkbox'] {
+  width: 20px;
+  height: 20px;
+  min-width: 20px;
+  min-height: 20px;
+  margin-right: 8px;
+  box-sizing: border-box;
+  outline: none;
+  border: 1px solid #bbb;
+  box-shadow: none;
+  appearance: none;
+  -webkit-appearance: none;
+  background: #fff;
+  border-radius: 2px;
+  position: relative;
+  transition: none;
+}
+
+/* 체크박스 체크 시 스타일 */
+.option-item input[type='checkbox']:checked,
+.region-option input[type='checkbox']:checked {
+  background: #3182f6;
+  border-color: #3182f6;
+}
+
+/* 체크박스 포커스 시 스타일 */
+.option-item input[type='checkbox']:focus,
+.region-option input[type='checkbox']:focus {
+  outline: none;
+  box-shadow: none;
+}
+
+/* 라벨 고정: 줄바꿈 금지, 오버플로우 처리 */
+.option-item label,
+.region-option label {
+  font-size: 15px;
+  padding: 0;
+  margin: 0;
+  font-weight: 400;
+  cursor: pointer;
+  user-select: none;
+  line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: calc(100% - 28px); /* 체크박스+간격 제외 */
+  display: block;
+}
+
+/* 체크 시 라벨 스타일 변화 금지 */
+.option-item input[type='checkbox']:checked + label,
+.region-option input[type='checkbox']:checked + label {
+  font-weight: 400;
+  color: inherit;
+}
+
+/* 옵션 컬럼/행/컨테이너에 border-box 적용 */
+.options-container,
+.options-row,
+.option-column,
+.option-item,
+.region-options-grid,
+.region-option {
+  box-sizing: border-box;
+}
+
+/* 지역 토글 내용 */
+.region-toggle-content {
+  padding: 20px;
+  background-color: #f9f9f9;
+}
+
+.region-options-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 15px;
+}
+
+/* 기간 토글 내용 */
+.period-toggle-content {
+  padding: 20px;
+  background-color: #f9f9f9;
+}
+
+.period-inputs-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+}
+
+.period-input-group {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 5px;
 }
 
-.dal-checkbox-label {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  background: #fff;
-  border: 1.3px solid #e5ede4;
-  border-radius: 8px;
-  padding: 7px 16px;
-  font-size: 15px;
-  color: #78905b;
+.period-input-group label {
+  font-size: 14px;
+  color: #555;
+}
+
+/* 달력 선택 스타일 */
+.date-picker {
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 16px;
+  background-color: white;
   cursor: pointer;
-  transition: background 0.2s, border 0.2s;
-  user-select: none;
+  min-width: 180px;
 }
 
-.dal-checkbox-label input[type='checkbox'] {
-  accent-color: #78905b;
-  width: 18px;
-  height: 18px;
+.date-picker::-webkit-calendar-picker-indicator {
+  cursor: pointer;
+  padding: 5px;
+  background-color: #f0f0f0;
+  border-radius: 3px;
 }
 
-.dal-checkbox-label input[type='checkbox']:checked + span,
-.dal-checkbox-label input[type='checkbox']:checked {
-  background: #e5ede4;
-  border-color: #78905b;
-  color: #78905b;
+.period-separator {
+  margin: 0 10px;
+  font-size: 18px;
+  color: #777;
+  align-self: flex-end;
+  margin-bottom: 10px;
 }
 
-.dal-checkbox-label input[type='checkbox']:checked ~ span {
-  font-weight: 700;
+/* 결과 및 차트 영역 */
+.results-and-chart {
+  display: flex;
+  gap: 30px;
+  margin-bottom: 30px;
 }
 
-.dal-checkbox-label input[type='checkbox']:disabled {
-  opacity: 0.5;
+/* 차트 영역 */
+.chart-container {
+  flex: 2;
+  background-color: #f9f9f9;
+  border: 1px solid #eee;
+  border-radius: 8px;
+  padding: 20px;
 }
 
-.dal-period-box {
+.chart-title {
+  text-align: center;
+  font-size: 16px;
+  font-weight: 500;
+  margin-bottom: 20px;
+}
+
+.chart-placeholder {
+  height: 400px;
   display: flex;
   align-items: center;
-  gap: 14px;
-  padding: 12px 20px;
-  background: #fff;
-  border: 1.5px solid #e5ede4;
+  justify-content: center;
+  border: 1px dashed #ddd;
+  background-color: #f5f5f5;
+}
+
+/* 분석 결과 영역 */
+.analysis-results {
+  flex: 1;
+  background-color: #fff;
+  border: 1px solid #eee;
   border-radius: 8px;
-  width: fit-content;
+  padding: 20px;
 }
 
-.dal-period-box input[type='month'] {
-  border: 1.2px solid #e5ede4;
-  border-radius: 6px;
+.results-title {
+  font-size: 20px;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+.selected-filters,
+.selected-regions,
+.analysis-period,
+.key-findings {
+  margin-bottom: 25px;
+}
+
+.selected-filters h3,
+.selected-regions h3,
+.analysis-period h3,
+.key-findings h3 {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+
+.filter-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+/* 분석 결과 영역 수정 */
+.filter-tag {
+  display: flex;
+  align-items: center;
+  background-color: #e8f0e8;
   padding: 5px 10px;
-  font-size: 15px;
-  color: #222;
-  background: #f7faf7;
+  border-radius: 20px;
+  font-size: 14px;
+  margin-right: 8px;
+  margin-bottom: 8px;
 }
 
-.dal-error {
-  color: #d14343;
-  font-size: 15px;
-  margin-bottom: 8px;
+.filter-category {
+  font-weight: 500;
+  margin-right: 5px;
+  color: #4a6741;
+}
+
+.filter-dot {
+  width: 8px;
+  height: 8px;
+  background-color: #4a6741;
+  border-radius: 50%;
+  margin-right: 5px;
+}
+
+.analysis-period p,
+.key-findings p {
+  font-size: 14px;
+  line-height: 1.5;
+  color: #555;
+}
+
+/* 반응형 디자인 */
+@media (max-width: 768px) {
+  .results-and-chart {
+    flex-direction: column;
+  }
+
+  .toggle-buttons {
+    flex-wrap: wrap;
+  }
+
+  .toggle-button {
+    flex-basis: calc(33.333% - 2px);
+  }
+
+  .period-inputs-container {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .period-separator {
+    align-self: center;
+    margin: 5px 0;
+  }
+
+  .date-picker {
+    min-width: 100%;
+  }
 }
