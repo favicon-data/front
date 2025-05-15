@@ -35,12 +35,16 @@ const DLIST = () => {
   //map : 각 요소 반환(새로운 배열) filter : 조건 만족한 요소만 출력
   const filteredData = data
     .map((item) => {
+      //내용으로 검색
       const description = item.description == null ? 'none' : item.description;
+      //제목으로 검색
+      const title = item.title == null ? 'none' : item.title;
       const theme =
         item.datasetTheme?.theme == null ? 'none' : item.datasetTheme.theme;
       return {
         // ...은 모든 속성 반환하는 것
         ...item,
+        title,
         description,
         datasetTheme: {
           ...item.datasetTheme,
@@ -52,12 +56,16 @@ const DLIST = () => {
       if (selectedCategory) {
         return (
           item.datasetTheme?.theme === selectedCategory &&
-          item.description.toLowerCase().includes(finalSearchTerm.toLowerCase())
+          (item.title.toLowerCase().includes(finalSearchTerm.toLowerCase()) ||
+            item.description
+              .toLowerCase()
+              .includes(finalSearchTerm.toLowerCase()))
         );
       }
-      return item.description
-        .toLowerCase()
-        .includes(finalSearchTerm.toLowerCase());
+      return (
+        item.description.toLowerCase().includes(finalSearchTerm.toLowerCase()),
+        item.title.toLowerCase().includes(finalSearchTerm.toLowerCase())
+      );
     });
 
   // 검색창에서 엔터 키를 눌렀을 때 호출되는 함수
