@@ -25,7 +25,9 @@ import {
   WormIcon as Virus,
   TrendingUp,
   Bookmark,
+  Link,
 } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 // 샘플 데이터 - 실제 구현 시 API에서 가져오는 데이터로 대체
 const dataSummary = {
@@ -222,6 +224,14 @@ export default function Home() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  // 추천 데이터 클릭시 링크 연결 구현
+  const [click, isClicked] = useState(false);
+  const navigate = useNavigate();
+  const listClick = (e) => {
+    isClicked(true);
+    const dId = e.currentTarget.dataset.datasetId;
+    navigate(`/detail/${dId}`);
+  };
   // API에서 추천 데이터셋 가져오기
   useEffect(() => {
     const fetchTopDatasets = async () => {
@@ -604,6 +614,8 @@ export default function Home() {
                       <Card
                         key={uiData.id}
                         className="bg-white shadow-md overflow-hidden hover:shadow-lg transition-shadow"
+                        onClick={listClick}
+                        data-dataset-id={dataset.datasetId}
                       >
                         <div className="relative h-48">
                           <img
