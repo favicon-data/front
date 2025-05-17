@@ -3,7 +3,10 @@
   background: #fff;
   font-family: 'Noto Sans KR', sans-serif;
 }
-
+.content {
+  max-width: 1800px;
+  margin: 0 auto;
+}
 .main-header {
   display: flex;
   align-items: center;
@@ -48,10 +51,6 @@
   font-size: 13px;
   color: #aaa;
   margin: 20px 0 0 32px;
-}
-
-.content {
-  margin: 0 32px;
 }
 
 h2 {

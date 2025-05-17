@@ -4,7 +4,7 @@ body {
   /* width: 1920px; */
   width: 1920px;
   height: 1080px;
-  border: 1px dashed red;
+  /* border: 1px dashed red; */
 }
 .header_wrap a {
   color: black;
@@ -33,6 +33,7 @@ body {
 }
 /* 2번째 박스 */
 .secondbox {
+  margin: 0 auto;
   width: 1560px;
   height: 100%;
 }
@@ -40,7 +41,7 @@ body {
   font-size: 36px;
   font-family: Arial, Helvetica, sans-serif;
   text-align: center;
-  margin: 100px 0 100px 0;
+  margin: 50px 0 50px 0;
 }
 .categorybox {
   display: inline-flex;
@@ -102,7 +103,7 @@ a {
   margin-top: 40px;
   padding: 30px 30px 30px 20px;
   width: 1000px;
-  height: 200px;
+  height: 100px;
   border-radius: 30px;
   border: 1px lightgray;
   box-shadow: 1px 2px 3px 2px lightgray;
@@ -120,4 +121,12 @@ a {
   position: relative;
   left: 490px;
   bottom: 60px;
+}
+.gptRes {
+  width: 1000px;
+  height: 300px;
+  border: 1px solid lightgray;
+  margin: 30px auto;
+  border-radius: 30px;
+  font-size: 22px;
 }

@@ -1,0 +1,103 @@
+body {
+    margin: 0;
+    font-family: sans-serif;
+    background-color: white;
+  }
+.logo img {
+    height: 40px;
+    flex: 0 0 auto;
+}
+header {
+    background-color: white;
+    padding-top: 30px;
+    padding-bottom: 0px;
+    padding-left: 50px;
+    padding-right: 40px;
+    height: 70px;
+}
+.container {
+    display: flex;
+    align-items: center;
+    gap: 50px;
+    margin: 0 auto;
+}
+nav {
+    display: flex;
+    gap: 50px;
+    flex: 1;
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+}
+.nav-line {
+    width: 100vw;
+    height: 0.5px;
+    background-color: #ccc;
+}
+
+nav a {
+    text-decoration: none;
+    color: black;
+    margin: 0 40px; /* 목록 사이 간격: 조정 필요 ? */
+    padding: 8px 16px;
+    font-size: 15px;
+    border: 1px solid #ccc;
+    border-radius: 7px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 90px;
+    height: 20px;
+}
+
+.page-path {
+    margin-top: 25px;
+    margin-left: 50px;
+    font-size: 12px;
+    color: #6d6d6d;
+}
+.page-path a {
+    color: #6d6d6d;
+    text-decoration: none;
+}
+
+.page-title {
+    margin-top: 15px;
+    margin-left: 50px;
+    color: black;
+    font-size: 20px;
+    font-weight: bold;
+}
+.intro {
+    margin-top: 40px;
+    margin-left: 50px;
+    font-size: 17px;
+}
+
+.content-container {
+    display: flex;
+    justify-content: space-evenly;
+    gap: 40px;
+    margin: 150px 30px 0 30px;
+  }
+  
+  .content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+  
+  .content img {
+    width: 160px;
+    height: auto;
+    margin-bottom: 35px;
+  }
+  
+  .content p {
+    font-size: 17px;
+    color: black;
+    line-height: 2;
+    margin: 0;
+  }

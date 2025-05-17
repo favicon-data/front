@@ -77,143 +77,147 @@ const DLIST = () => {
 
   return (
     <>
-      <div>
-        <h3 style={{ fontSize: '28px', margin: '40px 0 40px 80px' }}>
-          데이터 목록
-        </h3>
-      </div>
-      <div style={{ paddingLeft: '120px' }}>
-        <input
-          type="text"
-          placeholder="어떤 데이터를 찾으시나요?"
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          onKeyPress={handleKeyPress}
-          style={{
-            width: '1624px',
-            height: '70px',
-            padding: '10px 0 10px 30px',
-            marginBottom: '20px',
-            borderRadius: '30px',
-            fontSize: '24px',
-          }}
-        />
-        {/* 검색 결과 개수 출력 */}
-        <div style={{ height: '60px', position: 'absolute', width: '1624px' }}>
-          {(finalSearchTerm || selectedCategory) && (
-            <p style={{ fontSize: '26px' }}>
-              '{finalSearchTerm || selectedCategory}'에 대한 &nbsp;
-              {filteredData.length}개의 검색 결과입니다
-            </p>
-          )}
+      <div className="allContent">
+        <div>
+          <h3 style={{ fontSize: '28px', margin: '40px 0 40px 80px' }}>
+            데이터 목록
+          </h3>
         </div>
-        <hr
-          style={{
-            border: '2px solid lightgray',
-            marginTop: '70px',
-            marginLeft: 0,
-            width: '1624px',
-          }}
-        />
-        <div
-          className="categoryWrapper"
-          style={{ display: 'flex', paddingTop: '20px' }}
-        >
-          {/* 카테고리 필터 */}
-          <div
+        <div style={{ paddingLeft: '120px' }}>
+          <input
+            type="text"
+            placeholder="어떤 데이터를 찾으시나요?"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            onKeyPress={handleKeyPress}
             style={{
+              width: '1624px',
+              height: '70px',
+              padding: '10px 0 10px 30px',
               marginBottom: '20px',
-              // display: 'flex',
-              // flexDirection: 'column',
+              borderRadius: '30px',
+              fontSize: '24px',
             }}
+          />
+          {/* 검색 결과 개수 출력 */}
+          <div
+            style={{ height: '60px', position: 'absolute', width: '1624px' }}
           >
-            <p style={{ margin: 'none', fontSize: '18px' }}>필터</p>
-            <hr />
-            <p style={{ fontSize: '22px' }}>카테고리별</p>
-            <div
-              className="buttonWrap"
-              style={{ display: 'flex', flexDirection: 'column' }}
-            >
-              <button
-                className="cabutton"
-                style={{ fontSize: '24px' }}
-                onClick={() => {
-                  setSelectedCategory('');
-                  setFinalSearchTerm(''); // 카테고리를 초기화할 때 검색어도 초기화
-                }}
-              >
-                - 전체
-              </button>
-              <button
-                className="cabutton"
-                onClick={() => setSelectedCategory('기후')}
-                style={{ marginRight: '10px', fontSize: '20px' }}
-              >
-                - 기후
-              </button>
-              <button
-                className="cabutton"
-                style={{ fontSize: '20px' }}
-                onClick={() => setSelectedCategory('질병')}
-              >
-                - 질병
-              </button>
-              <button
-                className="cabutton"
-                style={{ fontSize: '20px' }}
-                onClick={() => setSelectedCategory('환경')}
-              >
-                - 환경
-              </button>
-            </div>
+            {(finalSearchTerm || selectedCategory) && (
+              <p style={{ fontSize: '26px' }}>
+                '{finalSearchTerm || selectedCategory}'에 대한 &nbsp;
+                {filteredData.length}개의 검색 결과입니다
+              </p>
+            )}
           </div>
-
-          {/* 데이터 출력 */}
-          <div className="outputWrapper">
-            <hr style={{ width: '58vw', marginLeft: '2vw' }} />
-            {filteredData.length > 0 ? (
-              filteredData.map((item) => (
-                <div
-                  key={item.datasetId}
-                  className="dataOutput"
-                  onClick={listClick}
-                  data-dataset-id={item.datasetId}
+          <hr
+            style={{
+              border: '2px solid lightgray',
+              marginTop: '70px',
+              marginLeft: 0,
+              width: '1624px',
+            }}
+          />
+          <div
+            className="categoryWrapper"
+            style={{ display: 'flex', paddingTop: '20px' }}
+          >
+            {/* 카테고리 필터 */}
+            <div
+              style={{
+                marginBottom: '20px',
+                // display: 'flex',
+                // flexDirection: 'column',
+              }}
+            >
+              <p style={{ margin: 'none', fontSize: '18px' }}>필터</p>
+              <hr />
+              <p style={{ fontSize: '22px' }}>카테고리별</p>
+              <div
+                className="buttonWrap"
+                style={{ display: 'flex', flexDirection: 'column' }}
+              >
+                <button
+                  className="cabutton"
+                  style={{ fontSize: '24px' }}
+                  onClick={() => {
+                    setSelectedCategory('');
+                    setFinalSearchTerm(''); // 카테고리를 초기화할 때 검색어도 초기화
+                  }}
                 >
+                  - 전체
+                </button>
+                <button
+                  className="cabutton"
+                  onClick={() => setSelectedCategory('기후')}
+                  style={{ marginRight: '10px', fontSize: '20px' }}
+                >
+                  - 기후
+                </button>
+                <button
+                  className="cabutton"
+                  style={{ fontSize: '20px' }}
+                  onClick={() => setSelectedCategory('질병')}
+                >
+                  - 질병
+                </button>
+                <button
+                  className="cabutton"
+                  style={{ fontSize: '20px' }}
+                  onClick={() => setSelectedCategory('환경')}
+                >
+                  - 환경
+                </button>
+              </div>
+            </div>
+
+            {/* 데이터 출력 */}
+            <div className="outputWrapper">
+              <hr style={{ width: '58vw', marginLeft: '2vw' }} />
+              {filteredData.length > 0 ? (
+                filteredData.map((item) => (
                   <div
-                    className="output"
-                    style={{
-                      height: '100%',
-                      padding: '30px',
-                    }}
+                    key={item.datasetId}
+                    className="dataOutput"
+                    onClick={listClick}
+                    data-dataset-id={item.datasetId}
                   >
                     <div
+                      className="output"
                       style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        fontSize: '23px',
-                        fontWeight: 'bold',
+                        height: '100%',
+                        padding: '30px',
                       }}
                     >
-                      <div className="outputCategory">
-                        {item.datasetTheme?.theme}
+                      <div
+                        style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          fontSize: '23px',
+                          fontWeight: 'bold',
+                        }}
+                      >
+                        <div className="outputCategory">
+                          {item.datasetTheme?.theme}
+                        </div>
+                        {item.title}
                       </div>
-                      {item.title}
+                      <p
+                        style={{
+                          fontSize: '20px',
+                          marginTop: '10px',
+                          color: 'gray',
+                        }}
+                      >
+                        {item.description}
+                      </p>
                     </div>
-                    <p
-                      style={{
-                        fontSize: '20px',
-                        marginTop: '10px',
-                        color: 'gray',
-                      }}
-                    >
-                      {item.description}
-                    </p>
                   </div>
-                </div>
-              ))
-            ) : (
-              <p style={{ marginLeft: '50px' }}>데이터가 없습니다.</p>
-            )}
+                ))
+              ) : (
+                <p style={{ marginLeft: '50px' }}>데이터가 없습니다.</p>
+              )}
+            </div>
           </div>
         </div>
       </div>

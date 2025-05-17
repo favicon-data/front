@@ -1,7 +1,7 @@
 /* 전체 레이아웃 */
 .data-analysis-container {
   font-family: 'Noto Sans KR', sans-serif;
-  width: 1700px;
+  width: 1800px;
   margin: 0 auto;
   padding: 20px;
   color: #333;
@@ -44,18 +44,22 @@
 
 /* 분석 섹션 */
 .analysis-section {
+  width: 1200px;
   margin-bottom: 30px;
-  background-color: #f5f5f5;
+  /* padding: 0 20px; */
+  /* background-color: #f5f5f5; */
   border-radius: 8px;
   overflow: hidden;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  /* box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); */
 }
 
 /* 토글 버튼 스타일 */
 .toggle-buttons {
   display: flex;
-  width: 100%;
-  gap: 2px;
+  /* width: 100%; */
+  width: 700px;
+  gap: 80px;
+  /* padding-left: 15px; */
 }
 
 .toggle-button {
@@ -64,11 +68,16 @@
   background-color: #8aa47e;
   color: white;
   border: none;
-  border-radius: 4px 4px 0 0;
+  /* border-radius: 4px 4px 0 0; */
   cursor: pointer;
   font-weight: 500;
   text-align: center;
   transition: background-color 0.2s;
+  /* --- */
+  /* margin-right: 15px; */
+
+  width: 170px;
+  border-radius: 15px;
 }
 
 .toggle-button:hover {
@@ -99,6 +108,7 @@
   border-radius: 0 0 8px 8px;
   overflow: hidden;
   width: 100%;
+  /* width: 600px; */
   min-width: 360px;
   box-sizing: border-box;
 }
@@ -144,13 +154,15 @@
   box-sizing: border-box;
   background-color: #f9f9f9;
 }
-
+.options-container {
+  /* width: 700px; */
+}
 .options-row {
   display: flex;
   width: 100% !important;
   min-width: 360px !important;
   max-width: 100% !important;
-  gap: 16px;
+  /* gap: 16px; */
   border-bottom: 1px solid #eee;
 }
 
@@ -204,8 +216,8 @@
 /* 체크박스 체크 시 스타일 */
 .option-item input[type='checkbox']:checked,
 .region-option input[type='checkbox']:checked {
-  background: #3182f6;
-  border-color: #3182f6;
+  background: #658147;
+  border-color: #658147;
 }
 
 /* 체크박스 포커스 시 스타일 */
@@ -251,7 +263,7 @@
 
 /* 지역 토글 내용 */
 .region-toggle-content {
-  padding: 20px;
+  padding: 10px;
   background-color: #f9f9f9;
 }
 
@@ -316,11 +328,13 @@
   display: flex;
   gap: 30px;
   margin-bottom: 30px;
+  height: 530px;
 }
 
 /* 차트 영역 */
 .chart-container {
-  flex: 2;
+  /* flex: 2; */
+  width: 1200px;
   background-color: #f9f9f9;
   border: 1px solid #eee;
   border-radius: 8px;
@@ -335,19 +349,21 @@
 }
 
 .chart-placeholder {
-  height: 400px;
+  margin: auto;
+  width: 1050px;
+  height: 450px;
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 1px dashed #ddd;
-  background-color: #f5f5f5;
+  /* border: 1px dashed #ddd; */
+  background-color: rgba(89, 116, 69, 0.1);
 }
 
 /* 분석 결과 영역 */
 .analysis-results {
   flex: 1;
   background-color: #fff;
-  border: 1px solid #eee;
+  /* border: 1px solid #eee; */
   border-radius: 8px;
   padding: 20px;
 }
@@ -369,7 +385,7 @@
 .selected-regions h3,
 .analysis-period h3,
 .key-findings h3 {
-  font-size: 16px;
+  font-size: 18px;
   font-weight: 600;
   margin-bottom: 10px;
 }
@@ -384,7 +400,7 @@
 .filter-tag {
   display: flex;
   align-items: center;
-  background-color: #e8f0e8;
+  /* background-color: #e8f0e8; */
   padding: 5px 10px;
   border-radius: 20px;
   font-size: 14px;
@@ -424,7 +440,7 @@
   }
 
   .toggle-button {
-    flex-basis: calc(33.333% - 2px);
+    /* flex-basis: calc(33.333% - 2px); */
   }
 
   .period-inputs-container {
@@ -438,6 +454,18 @@
   }
 
   .date-picker {
-    min-width: 100%;
+    /* min-width: 100%; */
   }
+}
+/* ------------------------------ */
+.category_wrap {
+  width: 600px;
+  border-radius: 15px;
+  /* height: 60px; */
+  /* margin-right: 10px; */
+  display: flex;
+  align-items: center;
+  background-color: rgba(89, 116, 69, 0.1);
+  padding: 10px;
+  gap: 15px;
 }

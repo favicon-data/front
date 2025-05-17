@@ -70,14 +70,14 @@ const DataDetail = () => {
             <tr>
               <th>카테고리</th>
               <td>{category}</td>
-              <th>제공연도</th>
-              <td>{year}</td>
-            </tr>
-            <tr>
               <th>확장자</th>
               <td>CSV</td>
-              <th>전체 행</th>
-              <td>1000</td>
+              {/* <th>제공연도</th>
+              <td>{year}</td> */}
+            </tr>
+            <tr>
+              {/* <th>전체 행</th>
+              <td>1000</td> */}
             </tr>
             <tr>
               <th>조회수</th>
