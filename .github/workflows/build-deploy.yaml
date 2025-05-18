@@ -1,0 +1,27 @@
+name: Front Deployment
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build Docker image
+        run: |
+          docker build \
+          --build-arg SPRING_PROFILES_ACTIVE=local \
+          -f Dockerfile \
+          -t ${{ vars.DOCKERHUB_USERNAME}}/erica-favicon-f:latest .
+      - name: DockerHub login
+        uses: docker/login-action@v2
+        with:
+          username: ${{ vars.DOCKERHUB_USERNAME}}
+          password: ${{ vars.DOCKERHUB_PASSWORD}}
+
+      - name: Push Docker image
+        run: docker push ${{ vars.DOCKERHUB_USERNAME}}/erica-favicon-f:latest
