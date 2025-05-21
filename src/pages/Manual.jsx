@@ -1,6 +1,6 @@
 import React from 'react';
 import '../guide.css';
-import image1 from '../components/images/analysis.png';
+import image1 from '../components/images/newCap.png';
 const Manual = () => {
   return (
     <div className="container">

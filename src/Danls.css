@@ -260,7 +260,10 @@
 .region-option {
   box-sizing: border-box;
 }
-
+.options-container {
+  max-height: 250px;
+  overflow-y: auto;
+}
 /* 지역 토글 내용 */
 .region-toggle-content {
   padding: 10px;

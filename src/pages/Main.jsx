@@ -31,12 +31,12 @@ const Main = () => {
         <div className="secondbox">
           <h2 className="title">무엇이든 물어보세요</h2>
           <div className="categorybox">
-            <Link to="/list">
-              <div className="box box1">
-                <img src={climate_icon} alt="기후" />
-                <p>기후</p>
-              </div>
-            </Link>
+            {/* <Link to="/list"> */}
+            <div className="box box1">
+              <img src={climate_icon} alt="기후" />
+              <p>기후</p>
+            </div>
+            {/* </Link> */}
             <div className="box box2">
               <img src={environ_icon} alt="환경" />
               <p>환경</p>
