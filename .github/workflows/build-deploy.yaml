@@ -25,3 +25,14 @@ jobs:
 
       - name: Push Docker image
         run: docker push ${{ vars.DOCKERHUB_USERNAME}}/erica-favicon-f:latest
+
+      - name: Deploy to EC2
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: favicon
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            docker pull ${{ vars.DOCKER_USERNAME }}/erica-favicon-f:latest
+            docker rm -f front 2>dev/null || true
+            docker run --name front -d -p 80:3000 ${{ vars.DOCKER_USERNAME }}/erica-favicon-f:latest
