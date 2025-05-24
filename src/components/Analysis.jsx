@@ -1,100 +1,231 @@
 import React from 'react';
 import Plot from 'react-plotly.js';
 
-//  Base64 문자열을 Float64Array로 변환
-
-function decodeBase64ToFloatArray(base64) {
-  const binary = atob(base64);
-  const bytes = new Uint8Array(binary.length);
-  for (let i = 0; i < binary.length; i++) {
-    bytes[i] = binary.charCodeAt(i);
+// bdata(base64) → TypedArray → JS 배열 변환
+function decodeBdata(obj) {
+  if (!obj || typeof obj !== 'object' || !obj.bdata) return obj;
+  const binary = atob(obj.bdata);
+  const buffer = new ArrayBuffer(binary.length);
+  const view = new Uint8Array(buffer);
+  for (let i = 0; i < binary.length; i++) view[i] = binary.charCodeAt(i);
+  switch (obj.dtype) {
+    case 'f8':
+      return Array.from(new Float64Array(buffer));
+    case 'f4':
+      return Array.from(new Float32Array(buffer));
+    case 'i4':
+      return Array.from(new Int32Array(buffer));
+    case 'u4':
+      return Array.from(new Uint32Array(buffer));
+    case 'i2':
+      return Array.from(new Int16Array(buffer));
+    case 'u2':
+      return Array.from(new Uint16Array(buffer));
+    case 'i1':
+      return Array.from(new Int8Array(buffer));
+    case 'u1':
+      return Array.from(new Uint8Array(buffer));
+    default:
+      return obj;
   }
-  return new Float64Array(bytes.buffer);
 }
 
-/**
- * ChartVisualization 컴포넌트
- * @param {Array} data - 서버에서 받은 data 배열 (예: [{x, y: {bdata}, ...}, ...])
- * @param {string} title - 그래프 제목 (Danls.jsx에서 동적으로 전달)
- */
-const ChartVisualization = ({ data, title }) => {
-  if (!data || data.length < 2) return <div>데이터가 없습니다.</div>;
+function convertPlotlyData(dataArr) {
+  if (!Array.isArray(dataArr)) return [];
+  return dataArr.map((trace) => {
+    const newTrace = { ...trace };
+    if (trace.x && typeof trace.x === 'object' && trace.x.bdata)
+      newTrace.x = decodeBdata(trace.x);
+    if (trace.y && typeof trace.y === 'object' && trace.y.bdata)
+      newTrace.y = decodeBdata(trace.y);
+    if (trace.z && typeof trace.z === 'object' && trace.z.bdata)
+      newTrace.z = decodeBdata(trace.z);
+    return newTrace;
+  });
+}
 
-  // 첫 번째 데이터
-  const firstData = data[0];
-  // 두 번째 데이터
-  const secondData = data[1];
+function normalizeAxisTitle(axis) {
+  if (!axis) return axis;
+  return {
+    ...axis,
+    title:
+      axis.title && typeof axis.title === 'object' && axis.title.text
+        ? axis.title.text
+        : axis.title,
+  };
+}
 
-  // Base64 → y값 변환
-  const firstY = decodeBase64ToFloatArray(firstData.y.bdata);
-  const secondY = decodeBase64ToFloatArray(secondData.y.bdata);
+const ChartVisualization = ({ graph, title }) => {
+  if (
+    !graph ||
+    !graph.data ||
+    !Array.isArray(graph.data) ||
+    graph.data.length === 0 ||
+    !graph.layout
+  ) {
+    return <div>그래프 데이터가 없습니다.</div>;
+  }
+
+  const traces = convertPlotlyData(graph.data);
+
+  let plotlyData = [];
+  let layout = { ...graph.layout };
+
+  if (traces.length === 1) {
+    // 선 그래프 (기간 x축, 값 y축)
+    const trace = {
+      ...traces[0],
+      type: 'scatter',
+      mode: 'lines+markers',
+      marker: { color: traces[0].marker?.color || '#3366cc' },
+      name: traces[0].name || '',
+      yaxis: 'y',
+      xaxis: 'x',
+    };
+    plotlyData = [trace];
+
+    layout = {
+      ...layout,
+      title:
+        title ||
+        (typeof graph.layout.title === 'object'
+          ? graph.layout.title.text
+          : graph.layout.title),
+      xaxis: {
+        ...normalizeAxisTitle(graph.layout.xaxis),
+        title:
+          graph.layout.xaxis?.title?.text ||
+          graph.layout.xaxis?.title ||
+          '기간',
+        tickfont: { size: 12 },
+        showgrid: true,
+        gridcolor: 'lightgrey',
+        zeroline: true,
+        zerolinewidth: 2,
+      },
+      yaxis: {
+        ...normalizeAxisTitle(graph.layout.yaxis),
+        title:
+          graph.layout.yaxis?.title?.text ||
+          graph.layout.yaxis?.title ||
+          traces[0].name ||
+          '값',
+        tickfont: { size: 12 },
+        showgrid: true,
+        gridcolor: 'lightgrey',
+      },
+      legend: {
+        orientation: 'h',
+        x: 0.5,
+        y: 1.1,
+        xanchor: 'center',
+      },
+      plot_bgcolor: '#F6F8F5',
+      paper_bgcolor: '#F6F8F5',
+      width: 1000,
+      height: 600,
+      margin: { l: 60, r: 60, t: 80, b: 60 },
+      barmode: undefined,
+    };
+  } else if (traces.length === 2) {
+    // 피라미드형 (기간 y축, 정규화된 값 x축, orientation: 'h')
+    // 서버에서 이미 orientation, x, y, marker, name 세팅됨
+    plotlyData = traces.map((trace, idx) => ({
+      ...trace,
+      type: 'bar',
+      orientation: 'h',
+      marker: {
+        color: idx === 0 ? 'royalblue' : 'orange',
+      },
+      hovertemplate: '%{y}<br>%{x:.2f}<extra></extra>',
+    }));
+
+    layout = {
+      ...layout,
+      title:
+        title ||
+        (typeof graph.layout.title === 'object'
+          ? graph.layout.title.text
+          : graph.layout.title),
+      xaxis: {
+        ...normalizeAxisTitle(graph.layout.xaxis),
+        title:
+          graph.layout.xaxis?.title?.text ||
+          graph.layout.xaxis?.title ||
+          '정규화된 값',
+        tickfont: { size: 12 },
+        showgrid: true,
+        gridcolor: 'lightgrey',
+        zeroline: true,
+        zerolinewidth: 2,
+        range: [-1, 1],
+      },
+      yaxis: {
+        ...normalizeAxisTitle(graph.layout.yaxis),
+        title:
+          graph.layout.yaxis?.title?.text ||
+          graph.layout.yaxis?.title ||
+          '기간',
+        tickfont: { size: 12 },
+        showgrid: true,
+        gridcolor: 'lightgrey',
+        autorange: 'reversed',
+        type: 'category',
+      },
+      legend: {
+        orientation: 'h',
+        x: 0.5,
+        y: 1.1,
+        xanchor: 'center',
+      },
+      plot_bgcolor: '#F6F8F5',
+      paper_bgcolor: '#F6F8F5',
+      width: 1000,
+      height: 600,
+      margin: { l: 60, r: 60, t: 80, b: 60 },
+      barmode: 'relative',
+    };
+  } else {
+    return <div>그래프 데이터가 없습니다.</div>;
+  }
 
   return (
     <Plot
-      data={[
-        {
-          x: firstData.x,
-          y: Array.from(firstY),
-          type: 'bar',
-          name: firstData.name,
-          marker: { color: firstData.marker?.color },
-        },
-        {
-          x: secondData.x,
-          y: Array.from(secondY),
-          type: 'scatter',
-          mode: 'lines+markers',
-          name: secondData.name,
-          line: {
-            color: secondData.line?.color,
-            width: secondData.line?.width,
-          },
-          marker: {
-            color: secondData.marker?.color,
-            size: secondData.marker?.size,
-          },
-          yaxis: 'y2',
-        },
-      ]}
-      layout={{
-        title: title,
-        xaxis: {
-          title: '연도',
-          tickfont: { size: 12 },
-          showgrid: true,
-          gridcolor: 'lightgrey',
-        },
-        yaxis: {
-          title: firstData.yaxisTitle || '1번 데이터',
-          tickfont: { size: 12 },
-          showgrid: true,
-          gridcolor: 'lightgrey',
-        },
-        yaxis2: {
-          title: secondData.yaxisTitle || '2번 데이터',
-          overlaying: 'y',
-          side: 'right',
-          showgrid: false,
-          tickfont: { size: 12 },
-        },
-        legend: {
-          font: { size: 14 },
-          xanchor: 'center',
-          x: 0.5,
-          yanchor: 'top',
-          orientation: 'h',
-        },
-        margin: { l: 50, r: 50, t: 80, b: 80 },
-        width: 1000,
-        height: 400,
-        plot_bgcolor: 'white',
-      }}
+      data={plotlyData}
+      layout={layout}
       config={{
         responsive: true,
         displayModeBar: true,
+      }}
+      style={{
+        width: layout.width || '100%',
+        height: layout.height || 500,
+        minWidth: 400,
+        minHeight: 350,
       }}
     />
   );
 };
 
-export default ChartVisualization;
+const Analysis = ({ analysisData }) => {
+  if (
+    !analysisData ||
+    !analysisData.data ||
+    !Array.isArray(analysisData.data) ||
+    analysisData.data.length === 0 ||
+    !analysisData.layout
+  ) {
+    return <div>그래프 데이터가 없습니다.</div>;
+  }
+
+  const title =
+    analysisData.layout &&
+    analysisData.layout.title &&
+    typeof analysisData.layout.title === 'object'
+      ? analysisData.layout.title.text
+      : analysisData.layout.title;
+
+  return <ChartVisualization graph={analysisData} title={title} />;
+};
+
+export default Analysis;
