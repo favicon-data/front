@@ -33,6 +33,6 @@ jobs:
           username: ubuntu
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
-            docker pull ${{ vars.DOCKER_USERNAME }}/erica-favicon-f:latest
-            docker rm -f front 2>dev/null || true
-            docker run --name front -d -p 80:3000 ${{ vars.DOCKER_USERNAME }}/erica-favicon-f:latest
+            docker pull ${{ vars.DOCKERHUB_USERNAME }}/erica-favicon-f:latest
+            docker rm -f front 2>/dev/null || true
+            docker run --name front -d -p 80:3000 ${{ vars.DOCKERHUB_USERNAME }}/erica-favicon-f:latest
