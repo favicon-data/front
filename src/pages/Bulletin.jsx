@@ -26,7 +26,9 @@ function Bulletin() {
   return (
     <div className="page-wrap">
       <div className="content">
-        <h3>사용자 요청</h3>
+        <h1 style={{ fontSize: '24px', fontWeight: 'bold', margin: '20px 0' }}>
+          사용자 요청
+        </h1>
         <div className="top-bar">
           <span className="total-count">전체 362건</span>
           <select className="sort-select">

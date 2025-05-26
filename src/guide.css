@@ -1,0 +1,142 @@
+/* * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Noto Sans KR', sans-serif; */
+/* }
+body {
+  background-color: #fff;
+  color: #333;
+} */
+.container {
+  max-width: 1800px;
+  margin: 0 auto;
+  padding: 20px;
+  position: relative;
+}
+/* 헤더 스타일 - 로고 왼쪽, 네비게이션 중앙 */
+/* header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 0;
+  border-bottom: 1px solid #eee;
+} */
+.logo {
+  display: flex;
+  align-items: center;
+}
+.logo img {
+  height: 40px;
+}
+.nav-menu {
+  display: flex;
+  justify-content: center;
+  gap: 100px; /* 메뉴 간격 더 늘림 */
+  margin: 0 auto; /* 중앙 정렬 */
+}
+.nav-button {
+  padding: 10px 20px;
+  background-color: white;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+}
+/* 빈 공간 추가 (로고와 네비게이션 균형을 위해) */
+.header-spacer {
+  width: 40px; /* 로고 크기와 비슷하게 */
+}
+/* 브레드크럼 스타일 */
+.breadcrumb {
+  margin: 15px 0;
+  color: #777;
+  font-size: 14px;
+}
+/* 페이지 제목 스타일 */
+.page-title {
+  font-size: 24px;
+  font-weight: bold;
+  margin: 20px 0;
+}
+/* 말풍선 스타일 */
+.speech-bubble {
+  position: relative;
+  background-color: #f0f4e6;
+  border-radius: 10px;
+  padding: 20px;
+  margin: 20px 0;
+  max-width: 600px;
+}
+.speech-bubble:after {
+  content: '';
+  position: absolute;
+  left: 30px;
+  bottom: -15px;
+  border-width: 15px 15px 0;
+  border-style: solid;
+  border-color: #f0f4e6 transparent;
+}
+.result-bubble {
+  position: absolute;
+  right: 400px;
+  top: 580px;
+  background-color: #f0f4e6;
+  border-radius: 10px;
+  padding: 15px;
+  text-align: center;
+  max-width: 200px;
+  z-index: 10;
+}
+.result-bubble:after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: -15px;
+  transform: translateX(-50%);
+  border-width: 15px 15px 0;
+  border-style: solid;
+  border-color: #f0f4e6 transparent;
+}
+/* 스크린샷 이미지 스타일 - 화질 개선 */
+.screenshot-container {
+  margin: 20px 0;
+  max-width: 100%;
+  position: relative;
+  overflow: hidden; /* 이미지 경계를 깔끔하게 */
+}
+.screenshot {
+  width: 100%;
+  height: auto;
+  border-radius: 5px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  image-rendering: -webkit-optimize-contrast; /* 웹킷 브라우저에서 이미지 선명도 향상 */
+  image-rendering: crisp-edges; /* 파이어폭스에서 이미지 선명도 향상 */
+  transform: translateZ(0); /* 하드웨어 가속 활성화 */
+  backface-visibility: hidden; /* 렌더링 개선 */
+  -ms-interpolation-mode: nearest-neighbor; /* IE에서 이미지 렌더링 개선 */
+  object-fit: contain; /* 이미지 비율 유지 */
+  max-height: 800px; /* 이미지 최대 높이 제한 */
+}
+.result-title {
+  font-size: 18px;
+  font-weight: bold;
+  margin: 20px 0;
+}
+@media (max-width: 768px) {
+  header {
+    flex-direction: column;
+    align-items: center;
+  }
+  .logo {
+    margin-bottom: 15px;
+  }
+  .nav-menu {
+    flex-wrap: wrap;
+    gap: 20px;
+  }
+  .result-bubble {
+    position: static;
+    margin: 20px auto;
+  }
+}

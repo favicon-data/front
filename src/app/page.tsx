@@ -471,7 +471,6 @@ export default function Home() {
               </CardContent>
             </Card>
 
-            {/* 월별 증가 추이 카드 */}
             <Card className="bg-white shadow-md">
               <CardHeader className="pb-2 border-b">
                 <CardTitle className="text-xl text-green-800">
@@ -480,31 +479,37 @@ export default function Home() {
                 <CardDescription>최근 4개월 데이터 증가 현황</CardDescription>
               </CardHeader>
               <CardContent className="pt-2">
-                <div className="h-64 flex items-end justify-between px-2">
-                  {dataSummary.monthlyGrowth.map((item, index) => {
-                    // 최대값 기준으로 상대적인 높이 계산
-                    const maxDataset = Math.max(
-                      ...dataSummary.monthlyGrowth.map((item) => item.datasets)
-                    );
-                    const heightPercentage = Math.max(
-                      5,
-                      (item.datasets / maxDataset) * 90
-                    ); // 최소 5% 높이 보장
-
+                <div className="h-64 flex items-end justify-between px-6">
+                  {/* 하드코딩된 계단식 데이터 */}
+                  {[
+                    { month: '2월', value: 100 },
+                    { month: '3월', value: 400 },
+                    { month: '4월', value: 700 },
+                    { month: '5월', value: 1300 },
+                  ].map((item, idx, arr) => {
+                    const maxValue = Math.max(...arr.map((i) => i.value));
+                    const heightPercent = Math.max(
+                      10,
+                      (item.value / maxValue) * 90
+                    ); // 최소 10% 보장
                     return (
-                      <div key={index} className="flex flex-col items-center">
+                      <div
+                        key={item.month}
+                        className="flex flex-col items-center w-1/6"
+                      >
                         <div
-                          className="w-16 bg-green-600 rounded-t-md transition-all duration-1000"
+                          className="w-8 bg-green-600 rounded-t-md transition-all duration-1000"
                           style={{
-                            height: `${heightPercentage}%`,
-                            opacity: 0.6 + index * 0.1,
+                            height: `${heightPercent * 2}px`,
+                            opacity: 0.7,
+                            boxShadow: '0 2px 8px rgba(56,161,105,0.08)',
                           }}
                         ></div>
                         <div className="mt-2 text-sm text-gray-600">
                           {item.month}
                         </div>
-                        <div className="text-xs text-gray-500">
-                          {item.datasets}
+                        <div className="text-xs text-gray-400">
+                          {item.value}
                         </div>
                       </div>
                     );
@@ -546,14 +551,19 @@ export default function Home() {
                             </p>
                           </div>
                         </div>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          className="hover:bg-white"
-                          style={{ color: color }}
+                        <button
+                          type="button"
+                          className="hover:bg-white px-3 py-1 rounded text-sm font-semibold"
+                          style={{ color: color, border: `1px solid ${color}` }}
+                          onClick={() => {
+                            // 쿼리 파라미터로 카테고리명 전달
+                            navigate(
+                              `/list?category=${encodeURIComponent(category)}`
+                            );
+                          }}
                         >
                           보기
-                        </Button>
+                        </button>
                       </div>
                     );
                   })}
@@ -712,6 +722,8 @@ export default function Home() {
                       <Card
                         key={uiData.id}
                         className="bg-white shadow-md overflow-hidden hover:shadow-lg transition-shadow"
+                        onClick={listClick}
+                        data-dataset-id={dataset.datasetId}
                       >
                         <div className="relative h-48">
                           <img
@@ -807,6 +819,8 @@ export default function Home() {
                       <Card
                         key={uiData.id}
                         className="bg-white shadow-md overflow-hidden hover:shadow-lg transition-shadow"
+                        onClick={listClick}
+                        data-dataset-id={dataset.datasetId}
                       >
                         <div className="relative h-48">
                           <img
@@ -902,6 +916,8 @@ export default function Home() {
                       <Card
                         key={uiData.id}
                         className="bg-white shadow-md overflow-hidden hover:shadow-lg transition-shadow"
+                        onClick={listClick}
+                        data-dataset-id={dataset.datasetId}
                       >
                         <div className="relative h-48">
                           <img
@@ -986,7 +1002,13 @@ export default function Home() {
           </Tabs>
 
           <div className="flex justify-center mt-8">
-            <Button className="bg-green-700 hover:bg-green-800 text-white">
+            <Button
+              className="bg-green-700 hover:bg-green-800 text-white"
+              onClick={() => {
+                // 쿼리 파라미터로 카테고리명 전달
+                navigate('/list');
+              }}
+            >
               전체 데이터 보기
             </Button>
           </div>

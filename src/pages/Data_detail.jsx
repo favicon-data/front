@@ -30,6 +30,7 @@ const DataDetail = () => {
   const year = Ndata.map((item) => item.datasetTheme?.dataYear ?? 'None');
   const download = Ndata.map((item) => item.download ?? 'None');
   const views = Ndata.map((item) => item.view ?? 'None');
+  const updateDate = Ndata.map((item) => item.updateDate ?? 'None');
   return (
     <div key={datasetId} className="data-detail-container">
       {/* 제목 영역 */}
@@ -62,7 +63,7 @@ const DataDetail = () => {
         <table className="data-table">
           <tbody>
             <tr>
-              <th>파일데이터명</th>
+              <th>데이터명</th>
               <td>{titles}</td>
               <th>기관</th>
               <td>{organization}</td>
@@ -70,18 +71,20 @@ const DataDetail = () => {
             <tr>
               <th>카테고리</th>
               <td>{category}</td>
-              <th>제공연도</th>
-              <td>{year}</td>
-            </tr>
-            <tr>
               <th>확장자</th>
               <td>CSV</td>
-              <th>전체 행</th>
-              <td>1000</td>
+              {/* <th>제공연도</th>
+              <td>{year}</td> */}
             </tr>
             <tr>
-              <th>조회수</th>
-              <td>{views}</td>
+              {/* <th>전체 행</th>
+              <td>1000</td> */}
+            </tr>
+            <tr>
+              {/* <th>조회수</th>
+              <td>{views}</td> */}
+              <th>업데이트</th>
+              <td>{updateDate}</td>
               <th>다운로드 수</th>
               <td>{download}</td>
             </tr>

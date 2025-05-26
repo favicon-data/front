@@ -61,11 +61,17 @@ const Signup = () => {
             type="text"
             className="input_box id"
             placeholder="아이디 입력"
-            style={{ fontSize: '28px' }}
+            style={{ fontSize: '28px', marginBottom: '24px' }}
           />
-          <p style={{ fontSize: '16px', color: 'red', marginBottom: '40px' }}>
+          {/* <p
+            style={{
+              fontSize: '16px',
+              color: 'transparent',
+              marginBottom: '40px',
+            }}
+          >
             "아이디 중복 확인 칸"
-          </p>
+          </p> */}
           <div className="name">비밀번호</div>
           <input
             type="text"
@@ -106,8 +112,25 @@ const Signup = () => {
           ) : (
             <p style={{ color: 'red' }}>비밀번호가 일치하지 않습니다.</p>
           )}
+          <div className="name">이메일</div>
+          <input
+            type="text"
+            className="input_box email"
+            placeholder="이메일 입력"
+            style={{ width: '1400px' }}
+          />
+          <button className="emailSend">인증요청</button>
+          <div className="name" style={{ marginTop: '24px' }}>
+            인증번호
+          </div>
+          <input
+            type="int"
+            className="input_box auth"
+            placeholder="인증번호 확인"
+            style={{ width: '1400px' }}
+          />
+          <button className="emailSend">확인</button>
         </div>
-
         <button
           className="input_box submitB"
           type="submit"

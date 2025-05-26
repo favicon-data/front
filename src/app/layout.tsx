@@ -382,7 +382,7 @@ export default function RootLayout({
                 <ul className="space-y-2">
                   <li>
                     <a
-                      href="/category/climate"
+                      href="/list?category=기후"
                       className="text-gray-600 hover:text-gray-900"
                     >
                       기후
@@ -390,7 +390,7 @@ export default function RootLayout({
                   </li>
                   <li>
                     <a
-                      href="/category/environment"
+                      href="/list?category=환경"
                       className="text-gray-600 hover:text-gray-900"
                     >
                       환경
@@ -398,7 +398,7 @@ export default function RootLayout({
                   </li>
                   <li>
                     <a
-                      href="/category/disease"
+                      href="/list?category=질병"
                       className="text-gray-600 hover:text-gray-900"
                     >
                       질병
