@@ -352,6 +352,7 @@
 }
 
 .chart-placeholder {
+  overflow-y: scroll;
   margin: auto;
   width: 1050px;
   height: 450px;
