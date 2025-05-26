@@ -39,6 +39,7 @@ const DLIST = () => {
   // 데이터 필터링 로직
   const filteredData = data
     .map((item) => {
+      //내용으로 검색
       const description = item.description == null ? 'none' : item.description;
       const title = item.title == null ? 'none' : item.title;
       const theme =
@@ -64,6 +65,7 @@ const DLIST = () => {
         );
       }
       return (
+
         item.title.toLowerCase().includes(finalSearchTerm.toLowerCase()) ||
         item.description.toLowerCase().includes(finalSearchTerm.toLowerCase())
       );
