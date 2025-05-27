@@ -2,6 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import '../Dlist.css';
 
+// const API_BASE_URL = "http://localhost:8082"
+const API_BASE_URL = "http://54.180.238.119:8080"
+
 const DLIST = () => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -25,13 +28,12 @@ const DLIST = () => {
   // 데이터 fetch
   useEffect(() => {
     const fetchData = async () => {
-      try {
-        const response = await fetch('http://54.180.238.119:8080/data-set');
-        const json = await response.json();
-        setData(json);
-      } catch (error) {
-        console.error('데이터 가져오기 실패:', error);
+      const response = await fetch(`${API_BASE_URL}/data-set`);
+      const json = await response.json();
+      if (json.status === "error") {
+        throw new Error('데이터 가져오기 실패');
       }
+      setData(json.data);
     };
     fetchData();
   }, []);

@@ -2,20 +2,22 @@ import { React, useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import './Ddetail.css';
 
+// const API_BASE_URL = "http://localhost:8082"
+const API_BASE_URL = "http://54.180.238.119:8080"
+
 const DataDetail = () => {
   const [data, setData] = useState([]);
   const { datasetId } = useParams();
 
   useEffect(() => {
     const fetchData = async () => {
-      try {
-        const response = await fetch('http://54.180.238.119:8080/data-set');
-        const json = await response.json();
-        console.log(json);
-        setData(json);
-      } catch (error) {
-        console.error('데이터 가져오기 실패:', error);
+      const response = await fetch(`${API_BASE_URL}/data-set`);
+      const json = await response.json();
+      if (json.status === "error") {
+        throw new Error('데이터 가져오기 실패');
       }
+      console.log(json);
+      setData(json.data);
     };
     fetchData();
   }, [datasetId]);

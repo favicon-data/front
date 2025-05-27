@@ -481,6 +481,9 @@ import '../Danls.css';
 import Analysis from '../components/Analysis.jsx';
 import GptClimateAnalyzer from '../components/gpt.jsx';
 
+// const API_BASE_URL = "http://localhost:8082"
+const API_BASE_URL = "http://54.180.238.119:8080"
+
 const Danls = () => {
   const [activeToggle, setActiveToggle] = useState(null);
 
@@ -525,10 +528,11 @@ const Danls = () => {
       setIsDataLoading(true);
       try {
         const response = await fetch(
-          'http://54.180.238.119:8080/data-set/group-by-theme'
+          `${API_BASE_URL}/data-set/group-by-theme`
         );
-        if (!response.ok) throw new Error('서버 응답 오류');
-        const data = await response.json();
+        const datas = await response.json();
+        if (datas.status === "error") throw new Error('서버 응답 오류');
+        const data = datas.data
         if (data.기후 && data.환경 && data.질병) {
           setOptionsData({
             기후: data.기후,
@@ -554,14 +558,15 @@ const Danls = () => {
     const fetchRegionsData = async () => {
       setIsDataLoading(true);
       try {
-        const response = await fetch('http://54.180.238.119:8080/region');
-        if (!response.ok) throw new Error('서버 응답 오류');
+        const response = await fetch(`${API_BASE_URL}/region`);
         const data = await response.json();
-        if (Array.isArray(data)) {
-          if (typeof data[0] === 'string') {
-            setRegionsData(data.map((region) => ({ regionName: region })));
+        if (data.status != "success") throw new Error('서버 응답 오류');
+
+        if (Array.isArray(data.data)) {
+          if (typeof data.data[0] === 'string') {
+            setRegionsData(data.data.map((region) => ({ regionName: region })));
           } else {
-            setRegionsData(data);
+            setRegionsData(data.data);
           }
         }
         setIsDataLoading(false);
@@ -656,30 +661,32 @@ const Danls = () => {
         end: period.end,
       };
 
-      const response = await fetch('http://54.180.238.119:8080/analysis', {
+      const response = await fetch(`${API_BASE_URL}/analysis`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(requestData),
-      });
-
-      if (!response.ok) {
-        let errorMsg = '';
-        try {
-          errorMsg = (await response.json()).message;
-        } catch {
-          errorMsg = response.statusText;
-        }
+      });      
+      let data;
+      try {
+        data = await response.json();
+      } catch (e) {
+        alert(`분석 요청 실패: ${response.status} ${response.statusText}`);
+        setIsLoading(false);
+        return;
+      }
+      
+      if (data.status === "error") {
+        const errorMsg = data.message || response.statusText;
         alert(`분석 요청 실패: ${response.status} ${errorMsg}`);
         setIsLoading(false);
         return;
       }
 
-      const data = await response.json();
       setAnalysisData((prev) => ({
         ...prev,
-        data, // 실제 그래프 데이터 전체를 data에 저장
+        data: data.data, // 실제 그래프 데이터 전체를 data에 저장
       }));
       setIsLoading(false);
     } catch (error) {
