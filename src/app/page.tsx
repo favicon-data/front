@@ -396,6 +396,31 @@ export default function Home() {
     }
   }, [topDatasets]);
 
+  const [stats, setStats] = useState([]);
+  useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        const response = await fetch(
+          `${API_BASE_URL}/data-set/stats`
+        );
+        const datas = await response.json();
+        if (datas.status === "error") {
+          throw new Error('데이터 개요 가져오기 실패')
+        }
+        const raw = datas.data;
+        const parsed = Object.entries(raw).map(([ym, val]) =>{
+          const month = parseInt(ym.split('-')[1]) + '월';
+          return {month, value: val['개수']};
+        });
+        setStats(parsed);
+      } catch (err) {
+        console.error(err);
+      }
+    };
+    fetchStats();
+  }, []);
+  const maxValue = Math.max(...stats.map((i)=>i.value), 1);
+
   return (
     <div className="min-h-screen bg-gray-50">
       {/* 메인 콘텐츠 */}
@@ -475,22 +500,12 @@ export default function Home() {
                 <CardTitle className="text-xl text-green-800">
                   월별 증가 추이
                 </CardTitle>
-                <CardDescription>최근 4개월 데이터 증가 현황</CardDescription>
+                <CardDescription>최근 6개월 데이터 증가 현황</CardDescription>
               </CardHeader>
               <CardContent className="pt-2">
                 <div className="h-64 flex items-end justify-between px-6">
-                  {/* 하드코딩된 계단식 데이터 */}
-                  {[
-                    { month: '2월', value: 100 },
-                    { month: '3월', value: 400 },
-                    { month: '4월', value: 700 },
-                    { month: '5월', value: 1300 },
-                  ].map((item, idx, arr) => {
-                    const maxValue = Math.max(...arr.map((i) => i.value));
-                    const heightPercent = Math.max(
-                      10,
-                      (item.value / maxValue) * 90
-                    ); // 최소 10% 보장
+                  { stats.map((item) => {
+                    const heightPercent = Math.max(10, (item.value /maxValue) * 90);
                     return (
                       <div
                         key={item.month}
