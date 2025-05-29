@@ -547,7 +547,10 @@ export default function Home() {
                           <div>
                             <p className="font-medium">{category}</p>
                             <p className="text-sm text-gray-600">
-                              {info.count.toLocaleString()}개 데이터셋
+                              {/* {info.count.toLocaleString()}개 데이터셋 */}
+                              {info && info.count != null
+                                ? `${info.count.toLocaleString()}개 데이터셋`
+                                : '데이터셋 없음'}
                             </p>
                           </div>
                         </div>
