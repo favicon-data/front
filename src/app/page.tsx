@@ -29,6 +29,9 @@ import {
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
+// const API_BASE_URL = "http://localhost:8082"
+const API_BASE_URL = "http://54.180.238.119:8080"
+
 // 샘플 데이터 - 실제 구현 시 API에서 가져오는 데이터로 대체
 const dataSummary = {
   total: 1248,
@@ -55,12 +58,6 @@ const dataSummary = {
       name: '질병',
     },
   },
-  monthlyGrowth: [
-    { month: '1월', datasets: 980 },
-    { month: '2월', datasets: 1050 },
-    { month: '3월', datasets: 1120 },
-    { month: '4월', datasets: 1248 },
-  ],
 };
 
 // 배너 슬라이드 데이터
@@ -238,13 +235,13 @@ export default function Home() {
       setIsLoading(true);
       try {
         const response = await fetch(
-          'http://54.180.238.119:8080/data-set/top9'
+          `${API_BASE_URL}/data-set/top9`
         );
-        if (!response.ok) {
+        const data = await response.json();
+        if (data.status==="error") {
           throw new Error('데이터를 불러오는데 실패했습니다.');
         }
-        const data = await response.json();
-        setTopDatasets(data);
+        setTopDatasets(data.data);
       } catch (err) {
         console.error('Error fetching top datasets:', err);
         setError('데이터를 불러오는데 문제가 발생했습니다.');
@@ -261,13 +258,13 @@ export default function Home() {
     const fetchTotalCount = async () => {
       try {
         const response = await fetch(
-          'http://54.180.238.119:8080/data-set/count'
+          `${API_BASE_URL}/data-set/count`
         );
-        if (!response.ok) {
+        const data = await response.json();
+        if (data.status === "error") {
           throw new Error('데이터셋 수를 불러오는데 실패했습니다.');
         }
-        const count = await response.json();
-        setTotalDatasets(count);
+        setTotalDatasets(data.data);
       } catch (err) {
         console.error('Error fetching dataset count:', err);
       }
@@ -281,17 +278,17 @@ export default function Home() {
     const fetchCategoryRatios = async () => {
       try {
         const response = await fetch(
-          'http://54.180.238.119:8080/data-set/ratio'
+          `${API_BASE_URL}/data-set/ratio`
         );
-        if (!response.ok) {
+        const data = await response.json();
+        if (data.status === "error") {
           throw new Error('카테고리 비율을 불러오는데 실패했습니다.');
         }
-        const data = await response.json();
-        setCategoryRatios(data);
+        setCategoryRatios(data.data);
 
         // 애니메이션을 위한 초기 비율 설정
         const initialPercentages: { [key: string]: number } = {};
-        Object.keys(data).forEach((category) => {
+        Object.keys(data.data).forEach((category) => {
           initialPercentages[
             categoryNameMapping[category] || category.toLowerCase()
           ] = 0;
@@ -301,7 +298,7 @@ export default function Home() {
         // 애니메이션 효과
         setTimeout(() => {
           const animatedValues: { [key: string]: number } = {};
-          Object.entries(data).forEach(([category, info]) => {
+          Object.entries(data.data).forEach(([category, info]) => {
             const categoryKey =
               categoryNameMapping[category] || category.toLowerCase();
             animatedValues[categoryKey] = (info as CategoryRatio).ratio;
@@ -368,12 +365,14 @@ export default function Home() {
 
       try {
         const response = await fetch(
-          `http://54.180.238.119:8080/trend/daily?date=${formattedDate}`
+          `${API_BASE_URL}/trend/daily?date=${formattedDate}`
         );
-        if (!response.ok) {
+        const datas = await response.json();
+        
+        if (datas.status === "error") {
           throw new Error('트렌드 데이터를 불러오는데 실패했습니다.');
         }
-        const trendData: Trend[] = await response.json();
+        const trendData: Trend[] = datas.data;
 
         // 각 topDatasets에 trend 매핑
         setTopDatasets((prev) =>
@@ -396,6 +395,31 @@ export default function Home() {
       fetchTrends();
     }
   }, [topDatasets]);
+
+  const [stats, setStats] = useState([]);
+  useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        const response = await fetch(
+          `${API_BASE_URL}/data-set/stats`
+        );
+        const datas = await response.json();
+        if (datas.status === "error") {
+          throw new Error('데이터 개요 가져오기 실패')
+        }
+        const raw = datas.data;
+        const parsed = Object.entries(raw).map(([ym, val]) =>{
+          const month = parseInt(ym.split('-')[1]) + '월';
+          return {month, value: val['개수']};
+        });
+        setStats(parsed);
+      } catch (err) {
+        console.error(err);
+      }
+    };
+    fetchStats();
+  }, []);
+  const maxValue = Math.max(...stats.map((i)=>i.value), 1);
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -476,22 +500,12 @@ export default function Home() {
                 <CardTitle className="text-xl text-green-800">
                   월별 증가 추이
                 </CardTitle>
-                <CardDescription>최근 4개월 데이터 증가 현황</CardDescription>
+                <CardDescription>최근 6개월 데이터 증가 현황</CardDescription>
               </CardHeader>
               <CardContent className="pt-2">
                 <div className="h-64 flex items-end justify-between px-6">
-                  {/* 하드코딩된 계단식 데이터 */}
-                  {[
-                    { month: '2월', value: 100 },
-                    { month: '3월', value: 400 },
-                    { month: '4월', value: 700 },
-                    { month: '5월', value: 1300 },
-                  ].map((item, idx, arr) => {
-                    const maxValue = Math.max(...arr.map((i) => i.value));
-                    const heightPercent = Math.max(
-                      10,
-                      (item.value / maxValue) * 90
-                    ); // 최소 10% 보장
+                  { stats.map((item) => {
+                    const heightPercent = Math.max(10, (item.value /maxValue) * 90);
                     return (
                       <div
                         key={item.month}

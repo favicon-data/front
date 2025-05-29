@@ -6,6 +6,9 @@ import Logout_modal from '../components/Logout_modal.jsx';
 
 import logo from '../components/images/favicon_logo.png';
 
+// const API_BASE_URL = "http://localhost:8082"
+const API_BASE_URL = "http://54.180.238.119:8080"
+
 const Login = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userName, setUserName] = useState('');
@@ -19,23 +22,23 @@ const Login = () => {
   // 로그인 처리 함수
   const handleLogin = async () => {
     try {
-      const response = await fetch('http://54.180.238.119:8080/users/login', {
+      const response = await fetch(`${API_BASE_URL}/users/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username, password }),
       });
+      const datas = await response.json();
 
-      if (response.ok) {
-        const data = await response.json();
-        setUserName(data.name);
+      if (datas.status === "error") {
+        throw new Error('로그인 실패');
+      } else {
+        const data = datas.data
+        setUserName(data.email);
         setIsLoggedIn(true);
-        alert(data.message);
+        // alert(data.message);
 
         // 로그인 성공 시 메인 화면으로 이동
         navigate('/main');
-      } else {
-        const errorData = await response.json();
-        alert('로그인 실패: ' + errorData.message);
       }
     } catch (error) {
       console.error('로그인 요청 에러:', error);
