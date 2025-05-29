@@ -122,7 +122,7 @@ export default function RootLayout({
                 </div>
 
                 {/* 검색창 - 중앙 배치 및 디자인 개선 */}
-                <div className="w-full md:w-1/3 px-4">
+                {/* <div className="w-full md:w-1/3 px-4">
                   <div className="flex shadow-md rounded-lg overflow-hidden">
                     <div className="relative flex-grow">
                       <Input
@@ -135,7 +135,7 @@ export default function RootLayout({
                       <Search className="h-5 w-5" />
                     </Button>
                   </div>
-                </div>
+                </div> */}
 
                 {/* 우측 여백 - 북마크 아이콘 추가 */}
                 <div className="w-full md:w-1/4 flex justify-center md:justify-end space-x-3">
