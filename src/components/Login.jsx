@@ -180,6 +180,33 @@ const Login = () => {
       console.error('로그인 요청 에러:', error);
     }
   };
+  //userId를 사용자별로 로컬로 저장할 수 있게 하는 부분
+  // const handleLogin = async () => {
+  //   try {
+  //     const response = await fetch('http://localhost:8080/users/login', {
+  //       method: 'POST',
+  //       headers: { 'Content-Type': 'application/json' },
+  //       body: JSON.stringify({ username, password }),
+  //     });
+
+  //     if (response.ok) {
+  //       const data = await response.json();
+  //       setUserName(data.name);
+  //       setIsLoggedIn(true);
+  //       // userId와 userName을 localStorage에 저장
+  //       localStorage.setItem(
+  //         'user',
+  //         JSON.stringify({ userId: data.userId, userName: data.name })
+  //       );
+  //       alert(data.message);
+  //     } else {
+  //       const errorData = await response.json();
+  //       alert('로그인 실패: ' + errorData.message);
+  //     }
+  //   } catch (error) {
+  //     console.error('로그인 요청 에러:', error);
+  //   }
+  // };
 
   // 로그아웃 처리 함수
   const handleLogout = () => {

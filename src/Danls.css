@@ -5,6 +5,7 @@
   margin: 0 auto;
   padding: 20px;
   color: #333;
+  margin-bottom: 30px;
 }
 
 /* 상단 네비게이션 */
@@ -369,7 +370,7 @@
   background-color: #fff;
   /* border: 1px solid #eee; */
   border-radius: 8px;
-  padding: 20px;
+  padding: 10px;
 }
 
 .results-title {

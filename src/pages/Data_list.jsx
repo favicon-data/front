@@ -3,7 +3,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import '../Dlist.css';
 
 // const API_BASE_URL = "http://localhost:8082"
-const API_BASE_URL = "http://54.180.238.119:8080"
+const API_BASE_URL = 'http://54.180.238.119:8080';
 
 const DLIST = () => {
   const navigate = useNavigate();
@@ -30,7 +30,7 @@ const DLIST = () => {
     const fetchData = async () => {
       const response = await fetch(`${API_BASE_URL}/data-set`);
       const json = await response.json();
-      if (json.status === "error") {
+      if (json.status === 'error') {
         throw new Error('데이터 가져오기 실패');
       }
       setData(json.data);
@@ -67,7 +67,6 @@ const DLIST = () => {
         );
       }
       return (
-
         item.title.toLowerCase().includes(finalSearchTerm.toLowerCase()) ||
         item.description.toLowerCase().includes(finalSearchTerm.toLowerCase())
       );
@@ -198,6 +197,7 @@ const DLIST = () => {
                       style={{
                         height: '100%',
                         padding: '30px',
+                        marginTop: '10px',
                       }}
                     >
                       <div

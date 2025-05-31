@@ -30,7 +30,7 @@ import {
 import { useNavigate } from 'react-router-dom';
 
 // const API_BASE_URL = "http://localhost:8082"
-const API_BASE_URL = "http://54.180.238.119:8080"
+const API_BASE_URL = 'http://54.180.238.119:8080';
 
 // 샘플 데이터 - 실제 구현 시 API에서 가져오는 데이터로 대체
 const dataSummary = {
@@ -234,11 +234,9 @@ export default function Home() {
     const fetchTopDatasets = async () => {
       setIsLoading(true);
       try {
-        const response = await fetch(
-          `${API_BASE_URL}/data-set/top9`
-        );
+        const response = await fetch(`${API_BASE_URL}/data-set/top9`);
         const data = await response.json();
-        if (data.status==="error") {
+        if (data.status === 'error') {
           throw new Error('데이터를 불러오는데 실패했습니다.');
         }
         setTopDatasets(data.data);
@@ -257,11 +255,9 @@ export default function Home() {
   useEffect(() => {
     const fetchTotalCount = async () => {
       try {
-        const response = await fetch(
-          `${API_BASE_URL}/data-set/count`
-        );
+        const response = await fetch(`${API_BASE_URL}/data-set/count`);
         const data = await response.json();
-        if (data.status === "error") {
+        if (data.status === 'error') {
           throw new Error('데이터셋 수를 불러오는데 실패했습니다.');
         }
         setTotalDatasets(data.data);
@@ -277,11 +273,9 @@ export default function Home() {
   useEffect(() => {
     const fetchCategoryRatios = async () => {
       try {
-        const response = await fetch(
-          `${API_BASE_URL}/data-set/ratio`
-        );
+        const response = await fetch(`${API_BASE_URL}/data-set/ratio`);
         const data = await response.json();
-        if (data.status === "error") {
+        if (data.status === 'error') {
           throw new Error('카테고리 비율을 불러오는데 실패했습니다.');
         }
         setCategoryRatios(data.data);
@@ -334,8 +328,8 @@ export default function Home() {
 
     // 카테고리별 이미지 매핑
     let categoryImage = '/images/climate.jpg';
-    if (themeId === 2) categoryImage = '/images/environment.png';
-    if (themeId === 3) categoryImage = '/images/disease.png';
+    if (themeId === 2) categoryImage = '/images/environment.jpg';
+    if (themeId === 3) categoryImage = '/images/disease.jpg';
 
     return {
       id: dataset.datasetId,
@@ -368,8 +362,8 @@ export default function Home() {
           `${API_BASE_URL}/trend/daily?date=${formattedDate}`
         );
         const datas = await response.json();
-        
-        if (datas.status === "error") {
+
+        if (datas.status === 'error') {
           throw new Error('트렌드 데이터를 불러오는데 실패했습니다.');
         }
         const trendData: Trend[] = datas.data;
@@ -400,17 +394,15 @@ export default function Home() {
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        const response = await fetch(
-          `${API_BASE_URL}/data-set/stats`
-        );
+        const response = await fetch(`${API_BASE_URL}/data-set/stats`);
         const datas = await response.json();
-        if (datas.status === "error") {
-          throw new Error('데이터 개요 가져오기 실패')
+        if (datas.status === 'error') {
+          throw new Error('데이터 개요 가져오기 실패');
         }
         const raw = datas.data;
-        const parsed = Object.entries(raw).map(([ym, val]) =>{
+        const parsed = Object.entries(raw).map(([ym, val]) => {
           const month = parseInt(ym.split('-')[1]) + '월';
-          return {month, value: val['개수']};
+          return { month, value: val['개수'] };
         });
         setStats(parsed);
       } catch (err) {
@@ -419,7 +411,7 @@ export default function Home() {
     };
     fetchStats();
   }, []);
-  const maxValue = Math.max(...stats.map((i)=>i.value), 1);
+  const maxValue = Math.max(...stats.map((i) => i.value), 1);
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -504,8 +496,11 @@ export default function Home() {
               </CardHeader>
               <CardContent className="pt-2">
                 <div className="h-64 flex items-end justify-between px-6">
-                  { stats.map((item) => {
-                    const heightPercent = Math.max(10, (item.value /maxValue) * 90);
+                  {stats.map((item) => {
+                    const heightPercent = Math.max(
+                      10,
+                      (item.value / maxValue) * 90
+                    );
                     return (
                       <div
                         key={item.month}
