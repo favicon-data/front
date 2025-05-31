@@ -1,4 +1,4 @@
-import '../Login.css';
+import '../styles/Login.css';
 import check from './images/check.png';
 
 const Logout_modal = ({ onClose, className }) => {

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import '../Dlist.css';
+import '../styles/Dlist.css';
 
 // const API_BASE_URL = "http://localhost:8082"
 const API_BASE_URL = 'http://54.180.238.119:8080';

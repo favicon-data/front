@@ -45,6 +45,8 @@ import Manual from './pages/Manual.jsx';
 import Signup from './pages/Signup.jsx';
 import Login from './pages/LoginP.jsx';
 import Ddetail from './pages/Data_detail.jsx';
+import NoticePage from './pages/NoticePage.jsx';
+import FAQPage from './pages/FAQPage.jsx';
 
 function App() {
   return (
@@ -62,6 +64,8 @@ function App() {
           <Route path="signup" element={<Signup />} />
           <Route path="login" element={<Login />} />
           <Route path="detail/:datasetId" element={<Ddetail />} />
+          <Route path="/notice" element={<NoticePage />} />
+          <Route path="/faq" element={<FAQPage />} />
         </Route>
       </Routes>
     </BrowserRouter>

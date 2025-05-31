@@ -456,7 +456,7 @@
 //   );
 // }
 import React, { useState, Suspense } from 'react';
-import '../index.css';
+import '../styles/index.css';
 import { ThemeProvider } from '../components/theme-provider.tsx';
 import { Button } from '../components/ui/button.tsx';
 import {
@@ -538,14 +538,13 @@ export default function RootLayout() {
                     </Link>
                     {/* 고객센터 드롭다운 메뉴 */}
                     <div className="relative group">
-                      <Link
-                        to="/support"
-                        className="text-gray-600 hover:text-gray-900 flex items-center"
+                      <span
+                        className="text-gray-600 hover:text-gray-900 flex items-center group-hover:block hover:block"
                         style={{ fontSize: '15px' }}
                       >
                         고객센터 ▾
-                      </Link>
-                      <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-10 hidden group-hover:block hover:block">
+                      </span>
+                      <div className="absolute right-0 mt-0 w-48 bg-white rounded-md shadow-lg py-1 z-10 hidden group-hover:block hover:block">
                         <Link
                           to="/notice"
                           className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
@@ -579,14 +578,13 @@ export default function RootLayout() {
                       로그아웃
                     </button>
                     <div className="relative group">
-                      <Link
-                        to="/support"
-                        className="text-gray-600 hover:text-gray-900 flex items-center"
+                      <span
+                        className="text-gray-600 hover:text-gray-900 flex items-center group-hover:block hover:block"
                         style={{ fontSize: '15px', marginBottom: '0' }}
                       >
                         고객센터 ▾
-                      </Link>
-                      <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-10 hidden group-hover:block hover:block">
+                      </span>
+                      <div className="absolute right-0 mt-0 w-48 bg-white rounded-md shadow-lg py-1 z-10 hidden group-hover:block hover:block">
                         <Link
                           to="/notice"
                           className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
@@ -626,8 +624,13 @@ export default function RootLayout() {
                 <div className="w-full md:w-1/4 flex justify-center md:justify-end space-x-3">
                   <Link to="/ai">
                     <Button
-                      className="px-3 bg-green-600 hover:bg-green-700 text-white rounded-lg"
+                      className="px-3 bg-white border border-black hover:bg-green-500 text-black rounded-lg"
                       title="AI 챗봇으로 데이터 검색"
+                      // style={{
+                      //   background: 'fff',
+                      //   border: '1px solid black',
+                      //   color: 'black',
+                      // }}
                     >
                       <MessageSquare className="h-5 w-5 mr-2" />
                       <span>AI Chat</span>
@@ -651,7 +654,7 @@ export default function RootLayout() {
                     <Bookmark className="h-5 w-5 mr-2" />
                     <span style={{ fontSize: '20px' }}>북마크</span>
                   </Link>
-                  <div className="absolute left-45 top-full mt-1 w-64 bg-white rounded-md shadow-lg py-1 z-20 hidden group-hover:block hover:block">
+                  <div className="absolute left-45 top-full mt-0 w-64 bg-white rounded-md shadow-lg py-1 z-20 hidden group-hover:block hover:block">
                     <div className="px-4 py-2 border-b border-gray-100">
                       <h4 className="font-medium text-sm text-gray-800">
                         북마크 리스트

@@ -85,7 +85,7 @@
 
 // export default Bulletin;
 import React, { useState, useEffect } from 'react';
-import '../Bulletin.css';
+import '../styles/Bulletin.css';
 
 function Bulletin() {
   const [requestData, setData] = useState([]);

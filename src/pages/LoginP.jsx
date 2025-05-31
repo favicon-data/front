@@ -195,7 +195,7 @@ import { useNavigate, useOutletContext } from 'react-router-dom';
 // import user_icon from '../components/images/user-icon.png';
 // import logout_icon from '../components/images/logout.png';
 import Logout_modal from '../components/Logout_modal.jsx';
-import logo from '../components/images/logo.png';
+import Logo from '../components/images/logo.png';
 
 const API_BASE_URL = 'http://54.180.238.119:8080';
 
@@ -281,7 +281,7 @@ const Login = () => {
       <div style={{ textAlign: 'center' }}>
         <div style={{ textAlign: 'center' }}>
           <img
-            src={logo}
+            src={Logo}
             alt="logo"
             style={{ width: '188px', marginBottom: '20px' }}
           />
@@ -307,7 +307,7 @@ const Login = () => {
                 width: '816px',
                 height: '80px',
                 fontSize: '26px',
-                backgroundColor: ' #597445',
+                backgroundColor: ' #8aa47e',
                 color: '#fff ',
                 borderRadius: '5px ',
                 marginTop: '85px',

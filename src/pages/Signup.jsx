@@ -218,7 +218,7 @@
 // export default Signup;
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import '../Login.css';
+import '../styles/Login.css';
 import axios from 'axios';
 
 const Signup = () => {
@@ -428,7 +428,7 @@ const Signup = () => {
               type="button"
               className="emailSend"
               onClick={handleEmailSend}
-              style={{ backgroundColor: '#597445', color: 'white' }}
+              style={{ backgroundColor: '#8aa47e', color: 'white' }}
             >
               인증요청
             </button>
@@ -453,7 +453,7 @@ const Signup = () => {
               type="button"
               className="emailSend"
               onClick={handleAuthCheck}
-              style={{ backgroundColor: '#597445', color: 'white' }}
+              style={{ backgroundColor: '#8aa47e', color: 'white' }}
             >
               확인
             </button>

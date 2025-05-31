@@ -477,7 +477,7 @@
 
 // export default Danls;
 import { useState, useEffect } from 'react';
-import '../Danls.css';
+import '../styles/Danls.css';
 import Analysis from '../components/Analysis.jsx';
 import GptClimateAnalyzer from '../components/gpt.jsx';
 

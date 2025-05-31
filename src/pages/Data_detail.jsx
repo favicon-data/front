@@ -100,7 +100,7 @@
 // export default DataDetail;
 import { React, useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import './Ddetail.css';
+import '../styles/Ddetail.css';
 
 const API_BASE_URL = 'http://54.180.238.119:8080';
 
