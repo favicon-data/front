@@ -27,7 +27,9 @@ import {
   Bookmark,
   Link,
 } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useOutlet, useOutletContext } from 'react-router-dom';
+// import { useParams } from 'react-router-dom';
+import type { OutletContextType } from '../types/OutletContextType.ts';
 
 // const API_BASE_URL = "http://localhost:8082"
 const API_BASE_URL = 'http://54.180.238.119:8080';
@@ -224,10 +226,10 @@ export default function Home() {
   // 추천 데이터 클릭시 링크 연결 구현
   const [click, isClicked] = useState(false);
   const navigate = useNavigate();
-  const listClick = (e) => {
+  const listClick = (datasetId: string) => {
     isClicked(true);
-    const dId = e.currentTarget.dataset.datasetId;
-    navigate(`/detail/${dId}`);
+    // const dId = e.currentTarget.dataset.datasetId;
+    navigate(`/detail/${datasetId}`);
   };
   // API에서 추천 데이터셋 가져오기
   useEffect(() => {
@@ -250,7 +252,69 @@ export default function Home() {
 
     fetchTopDatasets();
   }, []);
+  //북마크 기능
+  const [loading, setLoading] = useState(false);
+  const { fetchBookmarkList } = useOutletContext<OutletContextType>();
 
+  const handleAddBookmark = async (
+    datasetId: string,
+    onSuccess?: () => void
+  ) => {
+    setLoading(true);
+    setError('');
+    try {
+      const response = await fetch(`${API_BASE_URL}/users/scrap/${datasetId}`, {
+        method: 'POST',
+        credentials: 'include', // 세션/쿠키 인증 필요시
+        // headers: { 'Authorization': `Bearer ${token}` }, // 토큰 인증 필요시
+      });
+      if (!response.ok) throw new Error('북마크 추가 실패');
+      alert('북마크에 추가되었습니다!');
+      fetchBookmarkList(); // 북마크 리스트 즉시 새로고침
+      if (onSuccess) onSuccess();
+    } catch (err) {
+      setError('북마크 추가 중 오류가 발생했습니다.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // 메인 카드에서 다운로드 기능
+  // 다운로드 버튼 클릭 시 CSV 다운로드
+
+  const handleDownload = async (datasetId: string) => {
+    try {
+      const response = await fetch(
+        `${API_BASE_URL}/data-set/download/${datasetId}`,
+        {
+          method: 'GET',
+        }
+      );
+      if (!response.ok) {
+        throw new Error('다운로드 실패');
+      }
+      const blob = await response.blob();
+      // 파일명 추출 (Content-Disposition 헤더에서)
+      let filename = 'dataset.csv';
+      const disposition = response.headers.get('Content-Disposition');
+      if (disposition && disposition.indexOf('filename=') !== -1) {
+        filename = decodeURIComponent(
+          disposition.split('filename=')[1].replace(/['"]/g, '')
+        );
+      }
+      // 파일 다운로드 처리
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', filename);
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      alert('CSV 다운로드에 실패했습니다.');
+    }
+  };
   // 데이터셋 총 개수 가져오기
   useEffect(() => {
     const fetchTotalCount = async () => {
@@ -636,7 +700,6 @@ export default function Home() {
                       <Card
                         key={uiData.id}
                         className="bg-white shadow-md overflow-hidden hover:shadow-lg transition-shadow"
-                        onClick={listClick}
                         data-dataset-id={dataset.datasetId}
                       >
                         <div className="relative h-48">
@@ -662,7 +725,10 @@ export default function Home() {
                             </h3>
                           </div>
                         </div>
-                        <CardContent className="pt-4">
+                        <CardContent
+                          className="pt-4"
+                          onClick={() => listClick(String(dataset.datasetId))}
+                        >
                           <p className="text-sm text-gray-600 line-clamp-2 mb-3">
                             {uiData.description}
                           </p>
@@ -701,6 +767,9 @@ export default function Home() {
                               size="sm"
                               variant="outline"
                               className="h-8 w-8 p-0 rounded-full"
+                              onClick={() =>
+                                handleDownload(String(dataset.datasetId))
+                              }
                             >
                               <Download className="h-4 w-4" />
                             </Button>
@@ -708,6 +777,9 @@ export default function Home() {
                               size="sm"
                               variant="outline"
                               className="h-8 w-8 p-0 rounded-full"
+                              onClick={() =>
+                                handleAddBookmark(String(dataset.datasetId))
+                              }
                             >
                               <Bookmark className="h-4 w-4" />
                             </Button>
@@ -734,7 +806,6 @@ export default function Home() {
                       <Card
                         key={uiData.id}
                         className="bg-white shadow-md overflow-hidden hover:shadow-lg transition-shadow"
-                        onClick={listClick}
                         data-dataset-id={dataset.datasetId}
                       >
                         <div className="relative h-48">
@@ -760,7 +831,7 @@ export default function Home() {
                             </h3>
                           </div>
                         </div>
-                        <CardContent className="pt-4">
+                        <CardContent className="pt-4" onClick={listClick}>
                           <p className="text-sm text-gray-600 line-clamp-2 mb-3">
                             {uiData.description}
                           </p>
@@ -799,6 +870,9 @@ export default function Home() {
                               size="sm"
                               variant="outline"
                               className="h-8 w-8 p-0 rounded-full"
+                              onClick={() =>
+                                handleDownload(String(dataset.datasetId))
+                              }
                             >
                               <Download className="h-4 w-4" />
                             </Button>
@@ -806,6 +880,9 @@ export default function Home() {
                               size="sm"
                               variant="outline"
                               className="h-8 w-8 p-0 rounded-full"
+                              onClick={() =>
+                                handleAddBookmark(String(dataset.datasetId))
+                              }
                             >
                               <Bookmark className="h-4 w-4" />
                             </Button>
@@ -831,7 +908,6 @@ export default function Home() {
                       <Card
                         key={uiData.id}
                         className="bg-white shadow-md overflow-hidden hover:shadow-lg transition-shadow"
-                        onClick={listClick}
                         data-dataset-id={dataset.datasetId}
                       >
                         <div className="relative h-48">
@@ -857,7 +933,7 @@ export default function Home() {
                             </h3>
                           </div>
                         </div>
-                        <CardContent className="pt-4">
+                        <CardContent className="pt-4" onClick={listClick}>
                           <p className="text-sm text-gray-600 line-clamp-2 mb-3">
                             {uiData.description}
                           </p>
@@ -896,6 +972,9 @@ export default function Home() {
                               size="sm"
                               variant="outline"
                               className="h-8 w-8 p-0 rounded-full"
+                              onClick={() =>
+                                handleDownload(String(dataset.datasetId))
+                              }
                             >
                               <Download className="h-4 w-4" />
                             </Button>
@@ -903,6 +982,9 @@ export default function Home() {
                               size="sm"
                               variant="outline"
                               className="h-8 w-8 p-0 rounded-full"
+                              onClick={() =>
+                                handleAddBookmark(String(dataset.datasetId))
+                              }
                             >
                               <Bookmark className="h-4 w-4" />
                             </Button>
@@ -928,7 +1010,6 @@ export default function Home() {
                       <Card
                         key={uiData.id}
                         className="bg-white shadow-md overflow-hidden hover:shadow-lg transition-shadow"
-                        onClick={listClick}
                         data-dataset-id={dataset.datasetId}
                       >
                         <div className="relative h-48">
@@ -954,7 +1035,7 @@ export default function Home() {
                             </h3>
                           </div>
                         </div>
-                        <CardContent className="pt-4">
+                        <CardContent className="pt-4" onClick={listClick}>
                           <p className="text-sm text-gray-600 line-clamp-2 mb-3">
                             {uiData.description}
                           </p>
@@ -993,6 +1074,9 @@ export default function Home() {
                               size="sm"
                               variant="outline"
                               className="h-8 w-8 p-0 rounded-full"
+                              onClick={() =>
+                                handleDownload(String(dataset.datasetId))
+                              }
                             >
                               <Download className="h-4 w-4" />
                             </Button>
@@ -1000,6 +1084,9 @@ export default function Home() {
                               size="sm"
                               variant="outline"
                               className="h-8 w-8 p-0 rounded-full"
+                              onClick={() =>
+                                handleAddBookmark(String(dataset.datasetId))
+                              }
                             >
                               <Bookmark className="h-4 w-4" />
                             </Button>
