@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import '../Main.css';
+import '../styles/Main.css';
 
 import Green from '../components/GreenArea.jsx';
 import climate_icon from '../components/images/climate2.png';

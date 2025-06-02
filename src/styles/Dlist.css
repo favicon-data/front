@@ -16,6 +16,7 @@
 }
 .outputWrapper {
   margin-top: 51px;
+  width: 86%;
 }
 .dataOutput {
   background-color: rgba(89, 116, 69, 0.1);
@@ -32,3 +33,6 @@
   font-size: 20px;
   margin-right: 25px;
 }
+/* .allContent {
+  padding: 0 40px 0 40px;
+} */

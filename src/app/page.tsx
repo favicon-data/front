@@ -27,7 +27,12 @@ import {
   Bookmark,
   Link,
 } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useOutlet, useOutletContext } from 'react-router-dom';
+// import { useParams } from 'react-router-dom';
+import type { OutletContextType } from '../types/OutletContextType.ts';
+
+// const API_BASE_URL = "http://localhost:8082"
+const API_BASE_URL = 'http://54.180.238.119:8080';
 
 // 샘플 데이터 - 실제 구현 시 API에서 가져오는 데이터로 대체
 const dataSummary = {
@@ -55,12 +60,6 @@ const dataSummary = {
       name: '질병',
     },
   },
-  monthlyGrowth: [
-    { month: '1월', datasets: 980 },
-    { month: '2월', datasets: 1050 },
-    { month: '3월', datasets: 1120 },
-    { month: '4월', datasets: 1248 },
-  ],
 };
 
 // 배너 슬라이드 데이터
@@ -227,24 +226,22 @@ export default function Home() {
   // 추천 데이터 클릭시 링크 연결 구현
   const [click, isClicked] = useState(false);
   const navigate = useNavigate();
-  const listClick = (e) => {
+  const listClick = (datasetId: string) => {
     isClicked(true);
-    const dId = e.currentTarget.dataset.datasetId;
-    navigate(`/detail/${dId}`);
+    // const dId = e.currentTarget.dataset.datasetId;
+    navigate(`/detail/${datasetId}`);
   };
   // API에서 추천 데이터셋 가져오기
   useEffect(() => {
     const fetchTopDatasets = async () => {
       setIsLoading(true);
       try {
-        const response = await fetch(
-          'http://54.180.238.119:8080/data-set/top9'
-        );
-        if (!response.ok) {
+        const response = await fetch(`${API_BASE_URL}/data-set/top9`);
+        const data = await response.json();
+        if (data.status === 'error') {
           throw new Error('데이터를 불러오는데 실패했습니다.');
         }
-        const data = await response.json();
-        setTopDatasets(data);
+        setTopDatasets(data.data);
       } catch (err) {
         console.error('Error fetching top datasets:', err);
         setError('데이터를 불러오는데 문제가 발생했습니다.');
@@ -255,19 +252,79 @@ export default function Home() {
 
     fetchTopDatasets();
   }, []);
+  //북마크 기능
+  const [loading, setLoading] = useState(false);
+  const { fetchBookmarkList } = useOutletContext<OutletContextType>();
 
+  const handleAddBookmark = async (
+    datasetId: string,
+    onSuccess?: () => void
+  ) => {
+    setLoading(true);
+    setError('');
+    try {
+      const response = await fetch(`${API_BASE_URL}/users/scrap/${datasetId}`, {
+        method: 'POST',
+        credentials: 'include', // 세션/쿠키 인증 필요시
+        // headers: { 'Authorization': `Bearer ${token}` }, // 토큰 인증 필요시
+      });
+      if (!response.ok) throw new Error('북마크 추가 실패');
+      alert('북마크에 추가되었습니다!');
+      fetchBookmarkList(); // 북마크 리스트 즉시 새로고침
+      if (onSuccess) onSuccess();
+    } catch (err) {
+      setError('북마크 추가 중 오류가 발생했습니다.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // 메인 카드에서 다운로드 기능
+  // 다운로드 버튼 클릭 시 CSV 다운로드
+
+  const handleDownload = async (datasetId: string) => {
+    try {
+      const response = await fetch(
+        `${API_BASE_URL}/data-set/download/${datasetId}`,
+        {
+          method: 'GET',
+        }
+      );
+      if (!response.ok) {
+        throw new Error('다운로드 실패');
+      }
+      const blob = await response.blob();
+      // 파일명 추출 (Content-Disposition 헤더에서)
+      let filename = 'dataset.csv';
+      const disposition = response.headers.get('Content-Disposition');
+      if (disposition && disposition.indexOf('filename=') !== -1) {
+        filename = decodeURIComponent(
+          disposition.split('filename=')[1].replace(/['"]/g, '')
+        );
+      }
+      // 파일 다운로드 처리
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', filename);
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      alert('CSV 다운로드에 실패했습니다.');
+    }
+  };
   // 데이터셋 총 개수 가져오기
   useEffect(() => {
     const fetchTotalCount = async () => {
       try {
-        const response = await fetch(
-          'http://54.180.238.119:8080/data-set/count'
-        );
-        if (!response.ok) {
+        const response = await fetch(`${API_BASE_URL}/data-set/count`);
+        const data = await response.json();
+        if (data.status === 'error') {
           throw new Error('데이터셋 수를 불러오는데 실패했습니다.');
         }
-        const count = await response.json();
-        setTotalDatasets(count);
+        setTotalDatasets(data.data);
       } catch (err) {
         console.error('Error fetching dataset count:', err);
       }
@@ -280,18 +337,16 @@ export default function Home() {
   useEffect(() => {
     const fetchCategoryRatios = async () => {
       try {
-        const response = await fetch(
-          'http://54.180.238.119:8080/data-set/ratio'
-        );
-        if (!response.ok) {
+        const response = await fetch(`${API_BASE_URL}/data-set/ratio`);
+        const data = await response.json();
+        if (data.status === 'error') {
           throw new Error('카테고리 비율을 불러오는데 실패했습니다.');
         }
-        const data = await response.json();
-        setCategoryRatios(data);
+        setCategoryRatios(data.data);
 
         // 애니메이션을 위한 초기 비율 설정
         const initialPercentages: { [key: string]: number } = {};
-        Object.keys(data).forEach((category) => {
+        Object.keys(data.data).forEach((category) => {
           initialPercentages[
             categoryNameMapping[category] || category.toLowerCase()
           ] = 0;
@@ -301,7 +356,7 @@ export default function Home() {
         // 애니메이션 효과
         setTimeout(() => {
           const animatedValues: { [key: string]: number } = {};
-          Object.entries(data).forEach(([category, info]) => {
+          Object.entries(data.data).forEach(([category, info]) => {
             const categoryKey =
               categoryNameMapping[category] || category.toLowerCase();
             animatedValues[categoryKey] = (info as CategoryRatio).ratio;
@@ -337,8 +392,8 @@ export default function Home() {
 
     // 카테고리별 이미지 매핑
     let categoryImage = '/images/climate.jpg';
-    if (themeId === 2) categoryImage = '/images/environment.png';
-    if (themeId === 3) categoryImage = '/images/disease.png';
+    if (themeId === 2) categoryImage = '/images/environment.jpg';
+    if (themeId === 3) categoryImage = '/images/disease.jpg';
 
     return {
       id: dataset.datasetId,
@@ -368,12 +423,14 @@ export default function Home() {
 
       try {
         const response = await fetch(
-          `http://54.180.238.119:8080/trend/daily?date=${formattedDate}`
+          `${API_BASE_URL}/trend/daily?date=${formattedDate}`
         );
-        if (!response.ok) {
+        const datas = await response.json();
+
+        if (datas.status === 'error') {
           throw new Error('트렌드 데이터를 불러오는데 실패했습니다.');
         }
-        const trendData: Trend[] = await response.json();
+        const trendData: Trend[] = datas.data;
 
         // 각 topDatasets에 trend 매핑
         setTopDatasets((prev) =>
@@ -396,6 +453,29 @@ export default function Home() {
       fetchTrends();
     }
   }, [topDatasets]);
+
+  const [stats, setStats] = useState([]);
+  useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        const response = await fetch(`${API_BASE_URL}/data-set/stats`);
+        const datas = await response.json();
+        if (datas.status === 'error') {
+          throw new Error('데이터 개요 가져오기 실패');
+        }
+        const raw = datas.data;
+        const parsed = Object.entries(raw).map(([ym, val]) => {
+          const month = parseInt(ym.split('-')[1]) + '월';
+          return { month, value: val['개수'] };
+        });
+        setStats(parsed);
+      } catch (err) {
+        console.error(err);
+      }
+    };
+    fetchStats();
+  }, []);
+  const maxValue = Math.max(...stats.map((i) => i.value), 1);
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -476,22 +556,15 @@ export default function Home() {
                 <CardTitle className="text-xl text-green-800">
                   월별 증가 추이
                 </CardTitle>
-                <CardDescription>최근 4개월 데이터 증가 현황</CardDescription>
+                <CardDescription>최근 6개월 데이터 증가 현황</CardDescription>
               </CardHeader>
               <CardContent className="pt-2">
                 <div className="h-64 flex items-end justify-between px-6">
-                  {/* 하드코딩된 계단식 데이터 */}
-                  {[
-                    { month: '2월', value: 100 },
-                    { month: '3월', value: 400 },
-                    { month: '4월', value: 700 },
-                    { month: '5월', value: 1300 },
-                  ].map((item, idx, arr) => {
-                    const maxValue = Math.max(...arr.map((i) => i.value));
+                  {stats.map((item) => {
                     const heightPercent = Math.max(
                       10,
                       (item.value / maxValue) * 90
-                    ); // 최소 10% 보장
+                    );
                     return (
                       <div
                         key={item.month}
@@ -547,7 +620,10 @@ export default function Home() {
                           <div>
                             <p className="font-medium">{category}</p>
                             <p className="text-sm text-gray-600">
-                              {info.count.toLocaleString()}개 데이터셋
+                              {/* {info.count.toLocaleString()}개 데이터셋 */}
+                              {info && info.count != null
+                                ? `${info.count.toLocaleString()}개 데이터셋`
+                                : '데이터셋 없음'}
                             </p>
                           </div>
                         </div>
@@ -624,7 +700,6 @@ export default function Home() {
                       <Card
                         key={uiData.id}
                         className="bg-white shadow-md overflow-hidden hover:shadow-lg transition-shadow"
-                        onClick={listClick}
                         data-dataset-id={dataset.datasetId}
                       >
                         <div className="relative h-48">
@@ -650,7 +725,10 @@ export default function Home() {
                             </h3>
                           </div>
                         </div>
-                        <CardContent className="pt-4">
+                        <CardContent
+                          className="pt-4"
+                          onClick={() => listClick(String(dataset.datasetId))}
+                        >
                           <p className="text-sm text-gray-600 line-clamp-2 mb-3">
                             {uiData.description}
                           </p>
@@ -689,6 +767,9 @@ export default function Home() {
                               size="sm"
                               variant="outline"
                               className="h-8 w-8 p-0 rounded-full"
+                              onClick={() =>
+                                handleDownload(String(dataset.datasetId))
+                              }
                             >
                               <Download className="h-4 w-4" />
                             </Button>
@@ -696,6 +777,9 @@ export default function Home() {
                               size="sm"
                               variant="outline"
                               className="h-8 w-8 p-0 rounded-full"
+                              onClick={() =>
+                                handleAddBookmark(String(dataset.datasetId))
+                              }
                             >
                               <Bookmark className="h-4 w-4" />
                             </Button>
@@ -722,7 +806,6 @@ export default function Home() {
                       <Card
                         key={uiData.id}
                         className="bg-white shadow-md overflow-hidden hover:shadow-lg transition-shadow"
-                        onClick={listClick}
                         data-dataset-id={dataset.datasetId}
                       >
                         <div className="relative h-48">
@@ -748,7 +831,7 @@ export default function Home() {
                             </h3>
                           </div>
                         </div>
-                        <CardContent className="pt-4">
+                        <CardContent className="pt-4" onClick={listClick}>
                           <p className="text-sm text-gray-600 line-clamp-2 mb-3">
                             {uiData.description}
                           </p>
@@ -787,6 +870,9 @@ export default function Home() {
                               size="sm"
                               variant="outline"
                               className="h-8 w-8 p-0 rounded-full"
+                              onClick={() =>
+                                handleDownload(String(dataset.datasetId))
+                              }
                             >
                               <Download className="h-4 w-4" />
                             </Button>
@@ -794,6 +880,9 @@ export default function Home() {
                               size="sm"
                               variant="outline"
                               className="h-8 w-8 p-0 rounded-full"
+                              onClick={() =>
+                                handleAddBookmark(String(dataset.datasetId))
+                              }
                             >
                               <Bookmark className="h-4 w-4" />
                             </Button>
@@ -819,7 +908,6 @@ export default function Home() {
                       <Card
                         key={uiData.id}
                         className="bg-white shadow-md overflow-hidden hover:shadow-lg transition-shadow"
-                        onClick={listClick}
                         data-dataset-id={dataset.datasetId}
                       >
                         <div className="relative h-48">
@@ -845,7 +933,7 @@ export default function Home() {
                             </h3>
                           </div>
                         </div>
-                        <CardContent className="pt-4">
+                        <CardContent className="pt-4" onClick={listClick}>
                           <p className="text-sm text-gray-600 line-clamp-2 mb-3">
                             {uiData.description}
                           </p>
@@ -884,6 +972,9 @@ export default function Home() {
                               size="sm"
                               variant="outline"
                               className="h-8 w-8 p-0 rounded-full"
+                              onClick={() =>
+                                handleDownload(String(dataset.datasetId))
+                              }
                             >
                               <Download className="h-4 w-4" />
                             </Button>
@@ -891,6 +982,9 @@ export default function Home() {
                               size="sm"
                               variant="outline"
                               className="h-8 w-8 p-0 rounded-full"
+                              onClick={() =>
+                                handleAddBookmark(String(dataset.datasetId))
+                              }
                             >
                               <Bookmark className="h-4 w-4" />
                             </Button>
@@ -916,7 +1010,6 @@ export default function Home() {
                       <Card
                         key={uiData.id}
                         className="bg-white shadow-md overflow-hidden hover:shadow-lg transition-shadow"
-                        onClick={listClick}
                         data-dataset-id={dataset.datasetId}
                       >
                         <div className="relative h-48">
@@ -942,7 +1035,7 @@ export default function Home() {
                             </h3>
                           </div>
                         </div>
-                        <CardContent className="pt-4">
+                        <CardContent className="pt-4" onClick={listClick}>
                           <p className="text-sm text-gray-600 line-clamp-2 mb-3">
                             {uiData.description}
                           </p>
@@ -981,6 +1074,9 @@ export default function Home() {
                               size="sm"
                               variant="outline"
                               className="h-8 w-8 p-0 rounded-full"
+                              onClick={() =>
+                                handleDownload(String(dataset.datasetId))
+                              }
                             >
                               <Download className="h-4 w-4" />
                             </Button>
@@ -988,6 +1084,9 @@ export default function Home() {
                               size="sm"
                               variant="outline"
                               className="h-8 w-8 p-0 rounded-full"
+                              onClick={() =>
+                                handleAddBookmark(String(dataset.datasetId))
+                              }
                             >
                               <Bookmark className="h-4 w-4" />
                             </Button>

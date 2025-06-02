@@ -1,5 +1,5 @@
 import React from 'react';
-import '../guide.css';
+import '../styles/guide.css';
 import image1 from '../components/images/newCap.png';
 const Manual = () => {
   return (

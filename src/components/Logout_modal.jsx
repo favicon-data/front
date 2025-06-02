@@ -1,4 +1,4 @@
-import '../Login.css';
+import '../styles/Login.css';
 import check from './images/check.png';
 
 const Logout_modal = ({ onClose, className }) => {
@@ -15,7 +15,7 @@ const Logout_modal = ({ onClose, className }) => {
           backgroundColor: 'rgb(26, 181, 31,0.12)',
         }}
       >
-        <img src={check} style={{ width: '27px' }} />
+        <img src={check} style={{ width: '27px', margin: '9px auto' }} />
       </div>
       <p style={{ fontSize: '24px', fontWeight: 'bolder' }}>로그아웃 완료</p>
       <p style={{ margin: '0px' }}>이용해주셔서</p>

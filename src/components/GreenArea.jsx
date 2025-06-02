@@ -1,21 +1,24 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 
+// const API_BASE_URL = "http://localhost:8082"
+const API_BASE_URL = "http://54.180.238.119:8080"
+
 const Green = ({ userName }) => {
   const [data, setData] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
-      try {
-        const response = await fetch(
-          'http://54.180.238.119:8080/data-set/ratio'
-        );
-        const json = await response.json();
-        console.log(json);
-        setData(json);
-      } catch (error) {
-        console.error('데이터 가져오기 실패:', error);
+      const response = await fetch(
+        `${API_BASE_URL}/data-set/ratio`
+      );
+      const json = await response.json();
+      if (json.status === "error") {
+        throw new Error('데이터 가져오기 실패');
       }
+      console.log(json.data);
+      setData(json.data);
+      
     };
     fetchData();
   }, []);
