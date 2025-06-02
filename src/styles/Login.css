@@ -43,7 +43,8 @@
 .confirmB {
   width: 316px;
   height: 60px;
-  background-color: #000000;
+  /* background-color: #000000; */
+  background-color: #8aa47e;
   color: #fff;
   border-radius: 0.75rem;
 }

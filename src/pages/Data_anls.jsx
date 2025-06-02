@@ -923,7 +923,7 @@ const Danls = () => {
         <div className="analysis-results">
           <h2 className="results-title">데이터 분석 결과</h2>
           <div className="selected-filters">
-            <h3>선택된 필터</h3>
+            <h3>카테고리</h3>
             <div className="filter-tags">
               {Object.entries(selectedOptions).map(([category, options]) =>
                 options.map((option, idx) => (
@@ -936,7 +936,7 @@ const Danls = () => {
             </div>
           </div>
           <div className="selected-regions">
-            <h3>선택된 지역</h3>
+            <h3>지역</h3>
             <div className="filter-tags">
               {selectedRegions.map((region, index) => (
                 <div key={index} className="filter-tag">
@@ -947,14 +947,14 @@ const Danls = () => {
             </div>
           </div>
           <div className="analysis-period">
-            <h3>분석 기간</h3>
+            <h3>기간</h3>
             <p>
               {formatDateForDisplay(period.start)} ~{' '}
               {formatDateForDisplay(period.end)}
             </p>
           </div>
           <div className="key-findings">
-            <h3>주요 발견</h3>
+            <h3>추천 그래프 및 핵심 요약</h3>
             {analysisData && analysisData.data && (
               <GptClimateAnalyzer
                 jsonData={JSON.stringify(analysisData.data)}

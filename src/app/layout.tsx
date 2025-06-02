@@ -1,4 +1,4 @@
-// import React, { useState, Suspense } from 'react';
+// import React, { useState, useEffect, Suspense } from 'react';
 // import '../styles/index.css';
 // import { ThemeProvider } from '../components/theme-provider.tsx';
 // import { Button } from '../components/ui/button.tsx';
@@ -16,47 +16,68 @@
 // } from 'lucide-react';
 // import { Link, Outlet, useNavigate } from 'react-router-dom';
 // import Logout_modal from '../components/Logout_modal.jsx';
-// // import LOGO from '../components/images/logo.png';
-
-// // 샘플 북마크 데이터
-// const bookmarkData = {
-//   climate: [
-//     { id: 1, title: '전국 기온 변화 데이터', date: '2023-04-15' },
-//     { id: 2, title: '한반도 강수량 분석', date: '2023-04-10' },
-//     { id: 3, title: '기후변화 예측 모델', date: '2023-03-28' },
-//   ],
-//   environment: [
-//     { id: 4, title: '전국 미세먼지 농도 데이터', date: '2023-04-12' },
-//     { id: 5, title: '수질 오염도 측정 데이터', date: '2023-04-05' },
-//     { id: 6, title: '산림 생태계 모니터링', date: '2023-03-30' },
-//   ],
-//   disease: [
-//     { id: 7, title: '코로나19 지역별 확진자 현황', date: '2023-04-18' },
-//     { id: 8, title: '독감 발생률 추이 분석', date: '2023-04-08' },
-//     { id: 9, title: '감염병 확산 예측 모델', date: '2023-03-25' },
-//   ],
-// };
+// import type { OutletContextType } from '../types/OutletContextType.ts';
 
 // export default function RootLayout() {
 //   // 로그인 상태 및 사용자명 관리
 //   const [isLoggedIn, setIsLoggedIn] = useState(false);
 //   const [userName, setUserName] = useState('');
 //   const [outModal, setoutModal] = useState(false);
+//   const [bookmarkList, setBookmarkList] = useState([]);
+//   const [bookmarkLoading, setBookmarkLoading] = useState(false);
+//   const [bookmarkError, setBookmarkError] = useState('');
+
 //   const navigate = useNavigate();
 //   const location = useLocation();
+
+//   // 북마크 리스트 fetch 함수 분리
+//   const fetchBookmarkList = () => {
+//     setBookmarkLoading(true);
+//     setBookmarkError('');
+//     fetch('http://54.180.238.119:8080/users/scrap', {
+//       credentials: 'include',
+//       // headers: { Authorization: `Bearer ${token}` }
+//     })
+//       .then((res) => {
+//         if (!res.ok) throw new Error('서버 오류');
+//         return res.json();
+//       })
+//       .then((data) => {
+//         setBookmarkList(Array.isArray(data) ? data : data.data || []);
+//       })
+//       .catch(() => setBookmarkError('북마크를 불러오지 못했습니다.'))
+//       .finally(() => setBookmarkLoading(false));
+//   };
+
+//   // isLoggedIn이 true가 될 때만 북마크 fetch
+//   useEffect(() => {
+//     if (isLoggedIn) {
+//       fetchBookmarkList();
+//     } else {
+//       setBookmarkList([]);
+//       setBookmarkError('');
+//       setBookmarkLoading(false);
+//     }
+//   }, [isLoggedIn]);
 
 //   // 로그아웃 핸들러
 //   const handleLogout = () => {
 //     setUserName('');
 //     setIsLoggedIn(false);
 //     setoutModal(true);
-//     navigate('/'); // 홈으로 이동(선택)
+//     navigate('/');
 //   };
 
-//   // 모달창을 닫음
+//   // 모달창 닫기
 //   const handleCloseModal = () => {
-//     setoutModal(false); // 모달창을 닫음
+//     setoutModal(false);
 //   };
+
+//   // 카테고리별 분류 (category 필드가 'climate', 'environment', 'disease'라고 가정)
+//   const climateBookmarks = bookmarkList.filter((b) => b.theme === '기후');
+//   const environmentBookmarks = bookmarkList.filter((b) => b.theme === '환경');
+//   const diseaseBookmarks = bookmarkList.filter((b) => b.theme === '질병');
+//   const allBookmarks = bookmarkList;
 
 //   return (
 //     <ThemeProvider>
@@ -150,7 +171,6 @@
 //                   </>
 //                 )}
 //               </div>
-
 //               {/* 로고와 검색창 - 검색창 중앙 배치 */}
 //               <div className="flex flex-col md:flex-row items-center justify-between py-2">
 //                 <div className="w-full md:w-1/4 mb-4 md:mb-0 flex justify-center md:justify-start md:pl-55">
@@ -168,8 +188,7 @@
 //                     </div>
 //                   </Link>
 //                 </div>
-
-//                 {/* 검색창 - 중앙 배치 및 디자인 개선 */}
+//                 {/* 검색창 */}
 //                 {location.pathname !== '/list' && (
 //                   <div className="w-full md:w-1/3 px-4">
 //                     <div className="flex shadow-md rounded-lg overflow-hidden">
@@ -202,7 +221,6 @@
 //               </div>
 //             </div>
 //           </div>
-
 //           {/* 메인 네비게이션 */}
 //           <div className="bg-white shadow-sm">
 //             <div className="container mx-auto px-4">
@@ -216,162 +234,195 @@
 //                     <Bookmark className="h-5 w-5 mr-2" />
 //                     <span style={{ fontSize: '20px' }}>북마크</span>
 //                   </Link>
-//                   <div className="absolute left-45 top-full mt-0 w-64 bg-white rounded-md shadow-lg py-1 z-20 hidden group-hover:block hover:block">
-//                     <div className="px-4 py-2 border-b border-gray-100">
-//                       <h4 className="font-medium text-sm text-gray-800">
-//                         북마크 리스트
-//                       </h4>
+//                   {/* 북마크 드롭다운 */}
+//                   {isLoggedIn && (
+//                     <div className="absolute left-45 top-full mt-0 w-64 bg-white rounded-md shadow-lg py-1 z-20 hidden group-hover:block hover:block">
+//                       <div className="px-4 py-2 border-b border-gray-100">
+//                         <h4 className="font-medium text-sm text-gray-800">
+//                           북마크 리스트
+//                         </h4>
+//                       </div>
+//                       {bookmarkLoading && (
+//                         <div className="px-4 py-2 text-sm text-gray-400">
+//                           불러오는 중...
+//                         </div>
+//                       )}
+//                       {bookmarkError && (
+//                         <div className="px-4 py-2 text-sm text-red-500">
+//                           {bookmarkError}
+//                         </div>
+//                       )}
+//                       {!bookmarkLoading && !bookmarkError && (
+//                         <>
+//                           {/* 기후 데이터 북마크 */}
+//                           <div className="relative group/climate">
+//                             <div className="flex items-center justify-between px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer">
+//                               <div className="flex items-center">
+//                                 <div className="w-2 h-2 rounded-full bg-blue-500 mr-2"></div>
+//                                 기후 데이터 북마크
+//                               </div>
+//                               <ChevronRight className="h-4 w-4 text-gray-400" />
+//                             </div>
+//                             <div className="absolute left-full top-0 w-72 bg-white rounded-md shadow-lg py-1 z-30 hidden group-hover/climate:block hover:block ml-0.5">
+//                               <div className="px-4 py-2 border-b border-gray-100">
+//                                 <h4 className="font-medium text-sm text-blue-600">
+//                                   기후 데이터 북마크
+//                                 </h4>
+//                               </div>
+//                               {climateBookmarks.length === 0 && (
+//                                 <div className="px-4 py-2 text-sm text-gray-400">
+//                                   없음
+//                                 </div>
+//                               )}
+//                               {climateBookmarks.map((item) => (
+//                                 <Link
+//                                   key={item.datasetId}
+//                                   to={`/detail/${item.datasetId}`}
+//                                   className="flex items-center justify-between px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+//                                 >
+//                                   <span className="truncate">{item.title}</span>
+//                                   <span className="text-xs text-gray-500">
+//                                     {item.date}
+//                                   </span>
+//                                 </Link>
+//                               ))}
+//                               <div className="border-t border-gray-100 mt-1 pt-1">
+//                                 <Link
+//                                   to="/bookmarks/climate"
+//                                   className="block px-4 py-2 text-sm text-blue-600 font-medium hover:bg-gray-100"
+//                                 >
+//                                   모든 기후 북마크 보기
+//                                 </Link>
+//                               </div>
+//                             </div>
+//                           </div>
+//                           {/* 환경 데이터 북마크 */}
+//                           <div className="relative group/environment">
+//                             <div className="flex items-center justify-between px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer">
+//                               <div className="flex items-center">
+//                                 <div className="w-2 h-2 rounded-full bg-green-500 mr-2"></div>
+//                                 환경 데이터 북마크
+//                               </div>
+//                               <ChevronRight className="h-4 w-4 text-gray-400" />
+//                             </div>
+//                             <div className="absolute left-full top-0 w-72 bg-white rounded-md shadow-lg py-1 z-30 hidden group-hover/environment:block hover:block ml-0.5">
+//                               <div className="px-4 py-2 border-b border-gray-100">
+//                                 <h4 className="font-medium text-sm text-green-600">
+//                                   환경 데이터 북마크
+//                                 </h4>
+//                               </div>
+//                               {environmentBookmarks.length === 0 && (
+//                                 <div className="px-4 py-2 text-sm text-gray-400">
+//                                   없음
+//                                 </div>
+//                               )}
+//                               {environmentBookmarks.map((item) => (
+//                                 <Link
+//                                   key={item.datasetId}
+//                                   to={`/detail/${item.datasetId}`}
+//                                   className="flex items-center justify-between px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+//                                 >
+//                                   <span className="truncate">{item.title}</span>
+//                                   <span className="text-xs text-gray-500">
+//                                     {item.date}
+//                                   </span>
+//                                 </Link>
+//                               ))}
+//                               <div className="border-t border-gray-100 mt-1 pt-1">
+//                                 <Link
+//                                   to="/bookmarks/environment"
+//                                   className="block px-4 py-2 text-sm text-green-600 font-medium hover:bg-gray-100"
+//                                 >
+//                                   모든 환경 북마크 보기
+//                                 </Link>
+//                               </div>
+//                             </div>
+//                           </div>
+//                           {/* 질병 데이터 북마크 */}
+//                           <div className="relative group/disease">
+//                             <div className="flex items-center justify-between px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer">
+//                               <div className="flex items-center">
+//                                 <div className="w-2 h-2 rounded-full bg-red-500 mr-2"></div>
+//                                 질병 데이터 북마크
+//                               </div>
+//                               <ChevronRight className="h-4 w-4 text-gray-400" />
+//                             </div>
+//                             <div className="absolute left-full top-0 w-72 bg-white rounded-md shadow-lg py-1 z-30 hidden group-hover/disease:block hover:block ml-0.5">
+//                               <div className="px-4 py-2 border-b border-gray-100">
+//                                 <h4 className="font-medium text-sm text-red-600">
+//                                   질병 데이터 북마크
+//                                 </h4>
+//                               </div>
+//                               {diseaseBookmarks.length === 0 && (
+//                                 <div className="px-4 py-2 text-sm text-gray-400">
+//                                   없음
+//                                 </div>
+//                               )}
+//                               {diseaseBookmarks.map((item) => (
+//                                 <Link
+//                                   key={item.datasetId}
+//                                   to={`/detail/${item.datasetId}`}
+//                                   className="flex items-center justify-between px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+//                                 >
+//                                   <span className="truncate">{item.title}</span>
+//                                   <span className="text-xs text-gray-500">
+//                                     {item.date}
+//                                   </span>
+//                                 </Link>
+//                               ))}
+//                               <div className="border-t border-gray-100 mt-1 pt-1">
+//                                 <Link
+//                                   to="/bookmarks/disease"
+//                                   className="block px-4 py-2 text-sm text-red-600 font-medium hover:bg-gray-100"
+//                                 >
+//                                   모든 질병 북마크 보기
+//                                 </Link>
+//                               </div>
+//                             </div>
+//                           </div>
+//                           {/* 모든 북마크 보기 */}
+//                           <div className="relative group/all border-t border-gray-100 mt-1 pt-1">
+//                             <div className="flex items-center justify-between px-4 py-2 text-sm text-green-600 font-medium hover:bg-gray-100 cursor-pointer">
+//                               <span>모든 북마크 보기</span>
+//                               <ChevronRight className="h-4 w-4 text-gray-400" />
+//                             </div>
+//                             <div className="absolute left-full top-0 w-72 bg-white rounded-md shadow-lg py-1 z-30 hidden group-hover/all:block hover:block ml-1">
+//                               <div className="px-4 py-2 border-b border-gray-100">
+//                                 <h4 className="font-medium text-sm text-green-800">
+//                                   모든 북마크
+//                                 </h4>
+//                               </div>
+//                               {allBookmarks.length === 0 && (
+//                                 <div className="px-4 py-2 text-sm text-gray-400">
+//                                   없음
+//                                 </div>
+//                               )}
+//                               {allBookmarks.map((item) => (
+//                                 <Link
+//                                   key={item.datasetId}
+//                                   to={`/detail/${item.datasetId}`}
+//                                   className="flex items-center justify-between px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+//                                 >
+//                                   <span className="truncate">{item.title}</span>
+//                                   <span className="text-xs text-gray-500">
+//                                     {item.date}
+//                                   </span>
+//                                 </Link>
+//                               ))}
+//                               <div className="border-t border-gray-100 mt-1 pt-1">
+//                                 <Link
+//                                   to="/bookmarks/all"
+//                                   className="block px-4 py-2 text-sm text-green-600 font-medium hover:bg-gray-100"
+//                                 >
+//                                   북마크 관리하기
+//                                 </Link>
+//                               </div>
+//                             </div>
+//                           </div>
+//                         </>
+//                       )}
 //                     </div>
-//                     {/* 기후 데이터 북마크 */}
-//                     <div className="relative group/climate">
-//                       <div className="flex items-center justify-between px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer">
-//                         <div className="flex items-center">
-//                           <div className="w-2 h-2 rounded-full bg-blue-500 mr-2"></div>
-//                           기후 데이터 북마크
-//                         </div>
-//                         <ChevronRight className="h-4 w-4 text-gray-400" />
-//                       </div>
-//                       <div className="absolute left-full top-0 w-72 bg-white rounded-md shadow-lg py-1 z-30 hidden group-hover/climate:block hover:block ml-1">
-//                         <div className="px-4 py-2 border-b border-gray-100">
-//                           <h4 className="font-medium text-sm text-blue-600">
-//                             기후 데이터 북마크
-//                           </h4>
-//                         </div>
-//                         {bookmarkData.climate.map((item) => (
-//                           <Link
-//                             key={item.id}
-//                             to={`/datasets/${item.id}`}
-//                             className="flex items-center justify-between px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-//                           >
-//                             <span className="truncate">{item.title}</span>
-//                             <span className="text-xs text-gray-500">
-//                               {item.date}
-//                             </span>
-//                           </Link>
-//                         ))}
-//                         <div className="border-t border-gray-100 mt-1 pt-1">
-//                           <Link
-//                             to="/bookmarks/climate"
-//                             className="block px-4 py-2 text-sm text-blue-600 font-medium hover:bg-gray-100"
-//                           >
-//                             모든 기후 북마크 보기
-//                           </Link>
-//                         </div>
-//                       </div>
-//                     </div>
-//                     {/* 환경 데이터 북마크 */}
-//                     <div className="relative group/environment">
-//                       <div className="flex items-center justify-between px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer">
-//                         <div className="flex items-center">
-//                           <div className="w-2 h-2 rounded-full bg-green-500 mr-2"></div>
-//                           환경 데이터 북마크
-//                         </div>
-//                         <ChevronRight className="h-4 w-4 text-gray-400" />
-//                       </div>
-//                       <div className="absolute left-full top-0 w-72 bg-white rounded-md shadow-lg py-1 z-30 hidden group-hover/environment:block hover:block ml-1">
-//                         <div className="px-4 py-2 border-b border-gray-100">
-//                           <h4 className="font-medium text-sm text-green-600">
-//                             환경 데이터 북마크
-//                           </h4>
-//                         </div>
-//                         {bookmarkData.environment.map((item) => (
-//                           <Link
-//                             key={item.id}
-//                             to={`/datasets/${item.id}`}
-//                             className="flex items-center justify-between px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-//                           >
-//                             <span className="truncate">{item.title}</span>
-//                             <span className="text-xs text-gray-500">
-//                               {item.date}
-//                             </span>
-//                           </Link>
-//                         ))}
-//                         <div className="border-t border-gray-100 mt-1 pt-1">
-//                           <Link
-//                             to="/bookmarks/environment"
-//                             className="block px-4 py-2 text-sm text-green-600 font-medium hover:bg-gray-100"
-//                           >
-//                             모든 환경 북마크 보기
-//                           </Link>
-//                         </div>
-//                       </div>
-//                     </div>
-//                     {/* 질병 데이터 북마크 */}
-//                     <div className="relative group/disease">
-//                       <div className="flex items-center justify-between px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer">
-//                         <div className="flex items-center">
-//                           <div className="w-2 h-2 rounded-full bg-red-500 mr-2"></div>
-//                           질병 데이터 북마크
-//                         </div>
-//                         <ChevronRight className="h-4 w-4 text-gray-400" />
-//                       </div>
-//                       <div className="absolute left-full top-0 w-72 bg-white rounded-md shadow-lg py-1 z-30 hidden group-hover/disease:block hover:block ml-1">
-//                         <div className="px-4 py-2 border-b border-gray-100">
-//                           <h4 className="font-medium text-sm text-red-600">
-//                             질병 데이터 북마크
-//                           </h4>
-//                         </div>
-//                         {bookmarkData.disease.map((item) => (
-//                           <Link
-//                             key={item.id}
-//                             to={`/datasets/${item.id}`}
-//                             className="flex items-center justify-between px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-//                           >
-//                             <span className="truncate">{item.title}</span>
-//                             <span className="text-xs text-gray-500">
-//                               {item.date}
-//                             </span>
-//                           </Link>
-//                         ))}
-//                         <div className="border-t border-gray-100 mt-1 pt-1">
-//                           <Link
-//                             to="/bookmarks/disease"
-//                             className="block px-4 py-2 text-sm text-red-600 font-medium hover:bg-gray-100"
-//                           >
-//                             모든 질병 북마크 보기
-//                           </Link>
-//                         </div>
-//                       </div>
-//                     </div>
-//                     {/* 모든 북마크 보기 */}
-//                     <div className="relative group/all border-t border-gray-100 mt-1 pt-1">
-//                       <div className="flex items-center justify-between px-4 py-2 text-sm text-green-600 font-medium hover:bg-gray-100 cursor-pointer">
-//                         <span>모든 북마크 보기</span>
-//                         <ChevronRight className="h-4 w-4 text-gray-400" />
-//                       </div>
-//                       <div className="absolute left-full top-0 w-72 bg-white rounded-md shadow-lg py-1 z-30 hidden group-hover/all:block hover:block ml-1">
-//                         <div className="px-4 py-2 border-b border-gray-100">
-//                           <h4 className="font-medium text-sm text-green-800">
-//                             모든 북마크
-//                           </h4>
-//                         </div>
-//                         {[
-//                           ...bookmarkData.climate,
-//                           ...bookmarkData.environment,
-//                           ...bookmarkData.disease,
-//                         ].map((item) => (
-//                           <Link
-//                             key={item.id}
-//                             to={`/datasets/${item.id}`}
-//                             className="flex items-center justify-between px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-//                           >
-//                             <span className="truncate">{item.title}</span>
-//                             <span className="text-xs text-gray-500">
-//                               {item.date}
-//                             </span>
-//                           </Link>
-//                         ))}
-//                         <div className="border-t border-gray-100 mt-1 pt-1">
-//                           <Link
-//                             to="/bookmarks/all"
-//                             className="block px-4 py-2 text-sm text-green-600 font-medium hover:bg-gray-100"
-//                           >
-//                             북마크 관리하기
-//                           </Link>
-//                         </div>
-//                       </div>
-//                     </div>
-//                   </div>
+//                   )}
 //                 </div>
 //                 {/* 나머지 메뉴들 */}
 //                 <div className="w-full md:w-3/5 px-4 flex justify-center gap-x-15">
@@ -413,10 +464,16 @@
 //             </div>
 //           </div>
 //         </header>
-//         {/* Outlet에 로그인 상태 context 전달 */}
+
 //         <Suspense>
 //           <Outlet
-//             context={{ isLoggedIn, setIsLoggedIn, userName, setUserName }}
+//             context={{
+//               fetchBookmarkList,
+//               isLoggedIn,
+//               setIsLoggedIn,
+//               userName,
+//               setUserName,
+//             }}
 //           />
 //         </Suspense>
 //         {outModal && (
@@ -512,7 +569,6 @@
 //     </ThemeProvider>
 //   );
 // }
-
 import React, { useState, useEffect, Suspense } from 'react';
 import '../styles/index.css';
 import { ThemeProvider } from '../components/theme-provider.tsx';
@@ -532,6 +588,7 @@ import {
 import { Link, Outlet, useNavigate } from 'react-router-dom';
 import Logout_modal from '../components/Logout_modal.jsx';
 import type { OutletContextType } from '../types/OutletContextType.ts';
+import Modal from '../components/BookmarkModal.jsx';
 
 export default function RootLayout() {
   // 로그인 상태 및 사용자명 관리
@@ -544,6 +601,40 @@ export default function RootLayout() {
 
   const navigate = useNavigate();
   const location = useLocation();
+  const [searchTerm, setSearchTerm] = useState('');
+
+  const handleSearch = () => {
+    if (searchTerm.trim()) {
+      // /list?search=검색어 로 이동
+      navigate(`/list?search=${encodeURIComponent(searchTerm.trim())}`);
+    }
+  };
+  //북마크 모달창(삭제 관련)
+  const [bookmarkModalOpen, setBookmarkModalOpen] = useState(false);
+  const [deleteLoading, setDeleteLoading] = useState(false);
+  const [deleteError, setDeleteError] = useState('');
+
+  // 북마크 삭제 함수
+  const handleDeleteBookmark = async (scrapId) => {
+    if (!window.confirm('정말 삭제하시겠습니까?')) return;
+    setDeleteLoading(scrapId);
+    setDeleteError('');
+    try {
+      const res = await fetch(
+        `http://54.180.238.119:8080/users/scrap/${scrapId}`,
+        {
+          method: 'DELETE',
+          credentials: 'include',
+        }
+      );
+      if (!res.ok) throw new Error('삭제 실패');
+      await fetchBookmarkList();
+    } catch (err) {
+      setDeleteError('삭제 중 오류가 발생했습니다.');
+    } finally {
+      setDeleteLoading(false);
+    }
+  };
 
   // 북마크 리스트 fetch 함수 분리
   const fetchBookmarkList = () => {
@@ -712,10 +803,18 @@ export default function RootLayout() {
                           type="search"
                           className="h-[48px] py-2.5 text-base rounded-l-lg rounded-r-none border-r-0 border-gray-300 focus:ring-green-500 focus:border-green-500"
                           placeholder="검색어를 입력해주세요."
+                          value={searchTerm}
+                          onChange={(e) => setSearchTerm(e.target.value)}
+                          onKeyDown={(e) => {
+                            if (e.key === 'Enter') handleSearch();
+                          }}
                           style={{ fontSize: '1.1rem' }}
                         />
                       </div>
-                      <Button className="h-[48px] px-4 rounded-l-none bg-green-500 hover:bg-green-600 transition-colors text-white">
+                      <Button
+                        onClick={handleSearch}
+                        className="h-[48px] px-4 rounded-l-none bg-green-500 hover:bg-green-600 transition-colors text-white"
+                      >
                         <Search className="h-5 w-5" />
                       </Button>
                     </div>
@@ -742,13 +841,10 @@ export default function RootLayout() {
               <nav className="flex flex-wrap items-center">
                 {/* 북마크 메뉴 */}
                 <div className="w-full md:w-1/5 flex justify-center md:justify-start relative group md:ml-4">
-                  <Link
-                    to="/bookmarks"
-                    className="ml-45 flex items-center py-4 px-5 text-base text-gray-700 hover:text-green-600 hover:bg-green-50 border-b-2 border-transparent hover:border-green-600 transition-all whitespace-nowrap"
-                  >
+                  <div className="ml-45 flex items-center py-4 px-5 text-base text-gray-700 hover:text-green-600 hover:bg-green-50 border-b-2 border-transparent hover:border-green-600 transition-all whitespace-nowrap">
                     <Bookmark className="h-5 w-5 mr-2" />
                     <span style={{ fontSize: '20px' }}>북마크</span>
-                  </Link>
+                  </div>
                   {/* 북마크 드롭다운 */}
                   {isLoggedIn && (
                     <div className="absolute left-45 top-full mt-0 w-64 bg-white rounded-md shadow-lg py-1 z-20 hidden group-hover:block hover:block">
@@ -802,12 +898,12 @@ export default function RootLayout() {
                                 </Link>
                               ))}
                               <div className="border-t border-gray-100 mt-1 pt-1">
-                                <Link
+                                {/* <Link
                                   to="/bookmarks/climate"
                                   className="block px-4 py-2 text-sm text-blue-600 font-medium hover:bg-gray-100"
                                 >
                                   모든 기후 북마크 보기
-                                </Link>
+                                </Link> */}
                               </div>
                             </div>
                           </div>
@@ -844,12 +940,12 @@ export default function RootLayout() {
                                 </Link>
                               ))}
                               <div className="border-t border-gray-100 mt-1 pt-1">
-                                <Link
+                                {/* <Link
                                   to="/bookmarks/environment"
                                   className="block px-4 py-2 text-sm text-green-600 font-medium hover:bg-gray-100"
                                 >
                                   모든 환경 북마크 보기
-                                </Link>
+                                </Link> */}
                               </div>
                             </div>
                           </div>
@@ -886,18 +982,21 @@ export default function RootLayout() {
                                 </Link>
                               ))}
                               <div className="border-t border-gray-100 mt-1 pt-1">
-                                <Link
+                                {/* <Link
                                   to="/bookmarks/disease"
                                   className="block px-4 py-2 text-sm text-red-600 font-medium hover:bg-gray-100"
                                 >
                                   모든 질병 북마크 보기
-                                </Link>
+                                </Link> */}
                               </div>
                             </div>
                           </div>
                           {/* 모든 북마크 보기 */}
                           <div className="relative group/all border-t border-gray-100 mt-1 pt-1">
-                            <div className="flex items-center justify-between px-4 py-2 text-sm text-green-600 font-medium hover:bg-gray-100 cursor-pointer">
+                            <div
+                              className="flex items-center justify-between px-4 py-2 text-sm text-green-600 font-medium hover:bg-gray-100 cursor-pointer"
+                              onClick={() => setBookmarkModalOpen(true)}
+                            >
                               <span>모든 북마크 보기</span>
                               <ChevronRight className="h-4 w-4 text-gray-400" />
                             </div>
@@ -925,12 +1024,12 @@ export default function RootLayout() {
                                 </Link>
                               ))}
                               <div className="border-t border-gray-100 mt-1 pt-1">
-                                <Link
+                                {/* <Link
                                   to="/bookmarks/all"
                                   className="block px-4 py-2 text-sm text-green-600 font-medium hover:bg-gray-100"
                                 >
                                   북마크 관리하기
-                                </Link>
+                                </Link> */}
                               </div>
                             </div>
                           </div>
@@ -997,7 +1096,46 @@ export default function RootLayout() {
             className={outModal ? 'active' : ''}
           />
         )}
-
+        {/* 북마크 모달 */}
+        <Modal
+          open={bookmarkModalOpen}
+          onClose={() => setBookmarkModalOpen(false)}
+        >
+          <h2 className="text-lg font-bold mb-4">모든 북마크</h2>
+          {bookmarkLoading ? (
+            <div className="text-gray-400 py-4">불러오는 중...</div>
+          ) : bookmarkError ? (
+            <div className="text-red-500 py-4">{bookmarkError}</div>
+          ) : allBookmarks.length === 0 ? (
+            <div className="text-gray-400 py-4">북마크가 없습니다.</div>
+          ) : (
+            <ul>
+              {allBookmarks.map((item) => (
+                <li
+                  key={item.scrapId}
+                  className="flex items-center justify-between py-2 border-b last:border-b-0"
+                >
+                  <div>
+                    <span className="font-medium">{item.title}</span>
+                    <span className="ml-2 text-xs text-gray-400">
+                      {item.date}
+                    </span>
+                  </div>
+                  <button
+                    className="ml-3 px-2 py-1 bg-red-100 text-red-600 rounded hover:bg-red-200 text-xs"
+                    onClick={() => handleDeleteBookmark(item.scrapId)}
+                    disabled={deleteLoading === item.scrapId}
+                  >
+                    {deleteLoading === item.scrapId ? '삭제중...' : '삭제'}
+                  </button>
+                </li>
+              ))}
+            </ul>
+          )}
+          {deleteError && (
+            <div className="text-red-500 mt-2">{deleteError}</div>
+          )}
+        </Modal>
         <footer className="mt-auto bg-gray-100 border-t">
           <div className="container mx-auto px-4 py-8">
             <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
