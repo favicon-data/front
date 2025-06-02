@@ -544,6 +544,16 @@ export default function RootLayout() {
 
   const navigate = useNavigate();
   const location = useLocation();
+  const [searchTerm, setSearchTerm] = useState('');
+
+  const handleSearch = () => {
+    if (searchTerm.trim()) {
+      // /list?search=검색어 로 이동
+      navigate(`/list?search=${encodeURIComponent(searchTerm.trim())}`);
+    }
+  };
+
+
 
   // 북마크 리스트 fetch 함수 분리
   const fetchBookmarkList = () => {
@@ -712,11 +722,19 @@ export default function RootLayout() {
                           type="search"
                           className="h-[48px] py-2.5 text-base rounded-l-lg rounded-r-none border-r-0 border-gray-300 focus:ring-green-500 focus:border-green-500"
                           placeholder="검색어를 입력해주세요."
+                          value={searchTerm}
+                          onChange={(e) => setSearchTerm(e.target.value)}
+                          onKeyDown={(e) => {
+                            if (e.key === 'Enter') handleSearch();
+                          }}
                           style={{ fontSize: '1.1rem' }}
                         />
                       </div>
-                      <Button className="h-[48px] px-4 rounded-l-none bg-green-500 hover:bg-green-600 transition-colors text-white">
-                        <Search className="h-5 w-5" />
+                        <Button
+                            onClick={handleSearch}
+                            className="h-[48px] px-4 rounded-l-none bg-green-500 hover:bg-green-600 transition-colors text-white"
+                        >
+                          <Search className="h-5 w-5" />
                       </Button>
                     </div>
                   </div>
