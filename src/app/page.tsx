@@ -254,12 +254,19 @@ export default function Home() {
   }, []);
   //북마크 기능
   const [loading, setLoading] = useState(false);
-  const { fetchBookmarkList } = useOutletContext<OutletContextType>();
+  const { fetchBookmarkList, isLoggedIn } =
+    useOutletContext<OutletContextType>();
 
   const handleAddBookmark = async (
     datasetId: string,
     onSuccess?: () => void
   ) => {
+    // 로그인 여부 체크
+    if (!isLoggedIn) {
+      alert('로그인이 필요합니다.');
+      navigate('/login');
+      return;
+    }
     setLoading(true);
     setError('');
     try {
@@ -268,6 +275,8 @@ export default function Home() {
         credentials: 'include', // 세션/쿠키 인증 필요시
         // headers: { 'Authorization': `Bearer ${token}` }, // 토큰 인증 필요시
       });
+
+      // }
       if (!response.ok) throw new Error('북마크 추가 실패');
       alert('북마크에 추가되었습니다!');
       fetchBookmarkList(); // 북마크 리스트 즉시 새로고침
