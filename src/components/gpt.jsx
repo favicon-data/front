@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 // const OPENAI_API_KEY = process.env.REACT_APP_OPENAI_API_KEY;
 
-// const API_BASE_URL = "http://localhost:8081"
-const API_BASE_URL = 'http://54.180.238.119:8080';
+const API_BASE_URL2 = "http://localhost:8081"
+const API_BASE_URL = 'http://54.180.238.119:8081';
 
 const SYSTEM_PROMPT = `
 - 최고의 기후, 환경, 질병 전문가의 역할을 해야함.
@@ -14,7 +14,7 @@ const SYSTEM_PROMPT = `
 `;
 
 async function gptRequest({ messages }) {
-  const response = await fetch(`${API_BASE_URL}/gpt/chat`, {
+  const response = await fetch(`${API_BASE_URL2}/gpt/chat`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
