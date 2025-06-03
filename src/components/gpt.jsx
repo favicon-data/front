@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from 'react';
-const OPENAI_API_KEY = process.env.REACT_APP_OPENAI_API_KEY;
+// const OPENAI_API_KEY = process.env.REACT_APP_OPENAI_API_KEY;
+
+// const API_BASE_URL = "http://localhost:8081"
+const API_BASE_URL = 'http://54.180.238.119:8080';
 
 const SYSTEM_PROMPT = `
 - 최고의 기후, 환경, 질병 전문가의 역할을 해야함.
@@ -11,18 +14,12 @@ const SYSTEM_PROMPT = `
 `;
 
 async function gptRequest({ messages }) {
-  const response = await fetch('https://api.openai.com/v1/chat/completions', {
+  const response = await fetch(`${API_BASE_URL}/gpt/chat`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      Authorization: `Bearer ${OPENAI_API_KEY}`,
     },
-    body: JSON.stringify({
-      model: 'gpt-3.5-turbo',
-      messages,
-      temperature: 0.2,
-      max_tokens: 400,
-    }),
+    body: JSON.stringify({ messages }),
   });
   if (!response.ok) {
     const error = await response.json();
@@ -65,7 +62,9 @@ const GptClimateAnalyzer = ({ jsonData, onResult }) => {
           { role: 'system', content: SYSTEM_PROMPT },
           { role: 'user', content: userPrompt },
         ];
-        const data = await gptRequest({ messages });
+        const datas = await gptRequest({ messages });
+        if (datas.status === 'error') throw new Error('서버 응답 오류');
+        const data = JSON.parse(datas.data);
         const content = data.choices?.[0]?.message?.content?.trim() || '';
         if (!cancelled) {
           setResult(content);
