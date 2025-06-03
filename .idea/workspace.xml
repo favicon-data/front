@@ -5,11 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="829e2d24-bf43-417d-a2f6-69af9c130c25" name="변경" comment="">
-      <change beforePath="$PROJECT_DIR$/src/pages/Bulletin.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/Bulletin.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/pages/Data_list.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/Data_list.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/pages/Manual.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/Manual.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/styles/Bulletin.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/styles/Bulletin.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/styles/index.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/styles/index.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -31,7 +27,7 @@
   "keyToString": {
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "dev",
+    "git-widget-placeholder": "dev3",
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "C:/Users/ASY/Desktop/front_main",
     "node.js.detected.package.eslint": "true",
@@ -82,7 +78,7 @@
       <workItem from="1748835823273" duration="19000" />
       <workItem from="1748848428989" duration="2454000" />
       <workItem from="1748864857615" duration="16615000" />
-      <workItem from="1748944721837" duration="7095000" />
+      <workItem from="1748944721837" duration="10522000" />
     </task>
     <servers />
   </component>
