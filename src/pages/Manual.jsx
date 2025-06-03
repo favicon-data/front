@@ -4,7 +4,7 @@ import image1 from '../components/images/newCap.png';
 const Manual = () => {
   return (
     <div className="container">
-      <h1 className="page-title">favicon 이용 가이드</h1>
+      <h1 className="page-title">Favicon 이용 가이드</h1>
 
       <div className="speech-bubble">
         Step 1. 비교하고 싶은 카테고리를 1~2개를 선택하세요.

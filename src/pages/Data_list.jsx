@@ -332,9 +332,8 @@ const DLIST = () => {
     }
   };
 
-  const categories = ['', '기후', '질병', '환경'];
-
-  // 페이지 번호 생성 (앞뒤 2개, 처음/끝 포함, 나머지는 '...' 처리)
+  const categories = ['', '기후', '환경', '질병'];
+  
   const getPageNumbers = () => {
     if (totalPages <= 1) return [];
 
